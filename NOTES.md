@@ -215,3 +215,8 @@ export const SomeScreen = () => {
   return (
     <View>
 ```
+<br/><br/>
+
+## 1.7 Instalando Styled Components
+**yarn add styled-components**
+**yarn add @types/styled-components-react-native -D**
