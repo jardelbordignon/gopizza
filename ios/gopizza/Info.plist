@@ -56,5 +56,7 @@
 		<string>DMSans.ttf</string>
 		<string>DMSerifDisplay.ttf</string>
 	</array>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Permitir o acesso a minha localização</string>
 </dict>
 </plist>
