@@ -220,3 +220,8 @@ export const SomeScreen = () => {
 ## 1.7 Instalando Styled Components
 **yarn add styled-components**
 **yarn add @types/styled-components-react-native -D**
+
+## 1.8 - Tema da aplicação
+No arquivo theme/index.ts inserido as cores e fontes com os tokens.
+
+No styed.d.ts faz uma leitura desse arquivo com o typeof que incluída no DefaultTheme que por sua vez é sobrescrito para a app, então DefaultTheme passa a ter estas configs.
