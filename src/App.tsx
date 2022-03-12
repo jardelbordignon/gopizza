@@ -8,7 +8,11 @@ import theme from 'src/theme'
 export const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor="transparent"
+        translucent
+      />
 
       <SignIn />
     </ThemeProvider>

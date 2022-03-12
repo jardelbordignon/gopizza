@@ -260,7 +260,7 @@ export const Container = styled.View``
 ```
 <br/><br/>
 
-### 2.1 Utilizando do LinearGradient
+## 2.2 Utilizando do LinearGradient
 https://www.npmjs.com/package/react-native-linear-gradient <br/>
 https://github.com/react-native-linear-gradient/react-native-linear-gradient
 
@@ -282,3 +282,14 @@ export const Container = styled(LinearGradient).attrs(({ theme }) => ({
   justify-content: center;
 `
 ```
+<br/><br/>
+
+## 2.3 StatusBar
+Todos os Statusbar terão o conteúdo branco e background transparent para que fique da mesma cor da screen:
+
+Editar no App.tsx <br/>
+```
+<StatusBar barStyle={'light-content'} backgroundColor="transparent" translucent />
+```
+
+a prop translucent considera o limite do dispositivo como area util da interface
