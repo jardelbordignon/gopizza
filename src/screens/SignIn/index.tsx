@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Input } from 'src/components'
+import { Button, Input } from 'src/components'
 
 import * as S from './styles'
 
@@ -15,6 +15,10 @@ export const SignIn = () => {
       />
 
       <Input placeholder="Senha" variant="secondary" secureTextEntry />
+
+      <Button variant="secondary" isLoading={false}>
+        Entrar
+      </Button>
     </S.Container>
   )
 }

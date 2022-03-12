@@ -297,3 +297,8 @@ a prop translucent considera o limite do dispositivo como area util da interface
 
 ## 2.4 Componente Input
 Criado o componente Input que varia o layout conforme a prop variant
+<br/><br/>
+
+## 2.5 Componente Button
+Criado o componente Button que varia o layout conforme a prop variant
+<br/><br/>
