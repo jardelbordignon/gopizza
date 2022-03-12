@@ -218,10 +218,67 @@ export const SomeScreen = () => {
 <br/><br/>
 
 ## 1.7 Instalando Styled Components
-**yarn add styled-components**
+**yarn add styled-components**<br/>
 **yarn add @types/styled-components-react-native -D**
+<br/><br/>
 
 ## 1.8 - Tema da aplicação
 No arquivo theme/index.ts inserido as cores e fontes com os tokens.
 
 No styed.d.ts faz uma leitura desse arquivo com o typeof que incluída no DefaultTheme que por sua vez é sobrescrito para a app, então DefaultTheme passa a ter estas configs.
+<br/><br/>
+
+## 1.9 - Instalação e configuração do Firebase
+https://efficient-sloth-d85.notion.site/Instala-o-e-Configura-o-Firebase-939e568bc5d240f8949a6ab1cafadd43
+<br/><br/>
+
+>## 2 Autenticação
+
+### 2.1 Criação SignIn
+Criados arquivos no diretório src/screens/SignIn
+
+index.tsx
+```
+import React from 'react'
+
+import * as S from './styles'
+
+export const SignIn = () => {
+
+  return (
+    <S.Container>
+
+    </S.Container>
+  )
+}
+```
+styles.ts
+```
+import styled from 'styled-components/native'
+
+export const Container = styled.View``
+```
+<br/><br/>
+
+### 2.1 Utilizando do LinearGradient
+https://www.npmjs.com/package/react-native-linear-gradient <br/>
+https://github.com/react-native-linear-gradient/react-native-linear-gradient
+
+**yarn add react-native-linear-gradient** <br/>
+**yarn react-native link react-native-linear-gradient** <br/>
+Reiniciar o app
+
+Editar o src/screens/SignIn/styles.ts para
+```
+import LinearGradient from 'react-native-linear-gradient'
+import styled from 'styled-components/native'
+
+export const Container = styled(LinearGradient).attrs(({ theme }) => ({
+  colors: theme.COLORS.GRADIENT,
+  start: { x: 0, y: 1 },
+  end: { x: 0.5, y: 0.5 },
+}))`
+  flex: 1;
+  justify-content: center;
+`
+```
