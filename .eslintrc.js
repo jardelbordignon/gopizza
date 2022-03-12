@@ -1,8 +1,9 @@
+/* eslint-disable semi */
 module.exports = {
   root: true,
   extends: '@react-native-community',
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'import'],
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
@@ -10,7 +11,39 @@ module.exports = {
         '@typescript-eslint/no-shadow': ['error'],
         'no-shadow': 'off',
         'no-undef': 'off',
+        semi: ['error', 'never'],
+        '@typescript-eslint/semi': 'off',
+        'import/order': [
+          'error',
+          {
+            groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
+            pathGroups: [
+              {
+                pattern: '@lib/**',
+                group: 'external',
+                position: 'after',
+              },
+              {
+                pattern: 'src/**',
+                group: 'parent',
+                position: 'after',
+              },
+            ],
+            pathGroupsExcludedImportTypes: ['builtin'],
+            alphabetize: {
+              order: 'asc',
+            },
+            'newlines-between': 'always',
+          },
+        ],
+        'sort-imports': [
+          'error',
+          {
+            allowSeparatedGroups: true,
+            ignoreDeclarationSort: true,
+          },
+        ],
       },
     },
   ],
-};
+}
