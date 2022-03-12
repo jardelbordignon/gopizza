@@ -311,3 +311,38 @@ Conteúdo foi envolvido numa ScrolView, sendo que o padding-bottom ficou dinâmi
 por meio da lib react-native-iphone-x-helper,<br/>
 que ajusta a screen para q parte do conteúdo não fique escondido nos iphones recentes
 <br/><br/>
+
+## 2.7 Estrutura do Hook de Autenticação
+Criada a base do hook de autenticação<br/>
+src/hooks/useAuthentication.tsx
+```
+import React, { ReactNode, createContext, useContext } from 'react'
+
+type AuthContextProps = {}
+
+type AuthProviderProps = {
+  children: ReactNode
+}
+
+const AuthContext = createContext({} as AuthContextProps)
+
+const AuthProvider = ({ children }: AuthProviderProps) => {
+  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>
+}
+
+const useAuth = () => useContext(AuthContext)
+
+export { AuthContext, AuthProvider, useAuth }
+```
+
+Envolvido o app com o contexto<br/>
+App.tsx
+```
+import { AuthProvider } from 'src/hooks/useAuthentication'
+...
+  <AuthProvider>
+    <SignIn />
+  </AuthProvider>
+```
+<br/><br/>
+

@@ -2,6 +2,7 @@ import React from 'react'
 import { StatusBar } from 'react-native'
 import { ThemeProvider } from 'styled-components/native'
 
+import { AuthProvider } from 'src/hooks/useAuthentication'
 import { SignIn } from 'src/screens/SignIn'
 import theme from 'src/theme'
 
@@ -14,7 +15,9 @@ export const App = () => {
         translucent
       />
 
-      <SignIn />
+      <AuthProvider>
+        <SignIn />
+      </AuthProvider>
     </ThemeProvider>
   )
 }
