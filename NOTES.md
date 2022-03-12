@@ -302,3 +302,12 @@ Criado o componente Input que varia o layout conforme a prop variant
 ## 2.5 Componente Button
 Criado o componente Button que varia o layout conforme a prop variant
 <br/><br/>
+
+## 2.6 Finalizando interface do SignIn
+Utilizados KeyboardAvoidingView para subir o conteúdo quando o teclado estiver visível.<br/>
+Customizado o comportamento conforme a plataforma, se for ios insere um padding
+
+Conteúdo foi envolvido numa ScrolView, sendo que o padding-bottom ficou dinâmico
+por meio da lib react-native-iphone-x-helper,<br/>
+que ajusta a screen para q parte do conteúdo não fique escondido nos iphones recentes
+<br/><br/>
