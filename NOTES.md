@@ -293,3 +293,7 @@ Editar no App.tsx <br/>
 ```
 
 a prop translucent considera o limite do dispositivo como area util da interface
+<br/><br/>
+
+## 2.4 Componente Input
+Criado o componente Input que varia o layout conforme a prop variant
