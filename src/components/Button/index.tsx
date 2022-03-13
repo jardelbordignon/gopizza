@@ -1,21 +1,27 @@
+import 'react-native-gesture-handler'
 import React from 'react'
-import { RectButtonProps } from 'react-native-gesture-handler'
+import {
+  GestureHandlerRootView,
+  RectButtonProps,
+} from 'react-native-gesture-handler'
 
 import * as S from './styles'
 
-type ButtonProps = RectButtonProps & {
-  children: string
+type Props = RectButtonProps & {
+  title: string
   variant?: S.VariantType
   isLoading?: boolean
 }
 
 export const Button = ({
-  children,
+  title,
   variant = 'primary',
   isLoading = false,
   ...rest
-}: ButtonProps) => (
-  <S.Container variant={variant} enabled={!isLoading} {...rest}>
-    {isLoading ? <S.Load /> : <S.Title>{children}</S.Title>}
-  </S.Container>
+}: Props) => (
+  <GestureHandlerRootView>
+    <S.Container variant={variant} enabled={!isLoading} {...rest}>
+      {isLoading ? <S.Load /> : <S.Title>{title}</S.Title>}
+    </S.Container>
+  </GestureHandlerRootView>
 )
