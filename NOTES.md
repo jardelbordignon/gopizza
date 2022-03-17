@@ -346,3 +346,29 @@ import { AuthProvider } from 'src/hooks/useAuthentication'
 ```
 <br/><br/>
 
+## 2.8 Ativando Autenticação com Email e Senha
+### 2.8.1 Configurando GraphQL
+Necessário alterações no babel.config.js e metro.config.js para que entendam o graphql.
+<br/><br/>
+
+### 2.8.2 Configurando Codegen
+Seguindo alguns artigos como https://dev.to/harrisonhenri/creating-a-react-native-app-using-apollo-graphql-v3-gj5
+configurei codegen para gerar as typagens do endpoint (backend), para isso basta executar o comando
+<br/>
+**yarn gen-endpoint-types**
+<br/>
+O arquivo src/gql/generated/endpointTypes.ts será atualizado conforme os recursos do endpoint graphql.
+<br/><br/>
+
+### 2.8.3 Apollo Client
+No arquivo src/gql/client.ts uma função createClient retorna um ApolloClient em que é usado para servir
+o app, disponibilizado globalmente pelo ApolloProvider no App.tsx.
+<br/><br/>
+
+### 2.8.4 Hook useAuthentication
+Implemetado o recurso de login via backend/graphql por meio do useMutation do @apollo/client
+<br/><br/>
+
+## 2.9 Cadastrando usuários
+Criada uma coleção de usuários e inseridos dois registros, um deles é admin.
+<br/><br/>

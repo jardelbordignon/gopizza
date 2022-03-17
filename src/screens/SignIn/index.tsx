@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 
 import brandImg from 'src/assets/brand.png'
 import { Button, Input } from 'src/components'
+import { useAuth } from 'src/hooks/useAuthentication'
 
 import * as S from './styles'
 
 export const SignIn = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const { auth, loading } = useAuth()
+
   const ios = Platform.OS === 'ios'
+
+  const handleAuth = () => {
+    auth(email, password)
+  }
 
   return (
     <S.Container>
@@ -22,17 +32,26 @@ export const SignIn = () => {
             variant="secondary"
             autoCorrect={false}
             autoCapitalize="none"
+            onChangeText={setEmail}
           />
 
-          <Input placeholder="Senha" variant="secondary" secureTextEntry />
+          <Input
+            placeholder="Senha"
+            variant="secondary"
+            secureTextEntry
+            onChangeText={setPassword}
+          />
 
           <S.ForgotPasswordButton>
             <S.ForgotPasswordLabel>Esqueci minha senha</S.ForgotPasswordLabel>
           </S.ForgotPasswordButton>
 
-          <Button variant="secondary" isLoading={false}>
-            Entrar
-          </Button>
+          <Button
+            title="Entrar"
+            variant="secondary"
+            isLoading={loading}
+            onPress={handleAuth}
+          />
         </S.Content>
       </KeyboardAvoidingView>
     </S.Container>
