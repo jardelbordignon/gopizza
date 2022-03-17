@@ -14,6 +14,8 @@ target 'gopizza' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'gopizzaTests' do
     inherit! :complete
     # Pods for testing
