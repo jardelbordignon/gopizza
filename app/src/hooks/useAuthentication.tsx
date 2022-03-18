@@ -6,10 +6,12 @@ import { Alert } from 'react-native'
 import { LoginMutation } from 'src/gql/generated/endpointTypes'
 import { LOGIN_MUTATION } from 'src/gql/modules/account/mutations'
 
+type UserType = LoginMutation['login']['user']
+
 type AuthContextProps = {
   auth(email: string, password: string): Promise<void>
   loading: boolean
-  user?: LoginMutation['login']['user']
+  user?: UserType
 }
 
 type AuthProviderProps = {
@@ -20,14 +22,16 @@ const AuthContext = createContext({} as AuthContextProps)
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState<UserType>()
 
-  const [login] = useMutation<LoginMutation>(LOGIN_MUTATION, {
-    onCompleted(res) {
-      const { user, tokens } = res.login
-      AsyncStorage.setItem('@GoPizza:user', JSON.stringify(user))
+  const [loginMutation] = useMutation<LoginMutation>(LOGIN_MUTATION, {
+    onCompleted: ({ login }) => {
+      const { user: loggedUser, tokens } = login
+      setUser(loggedUser)
+      AsyncStorage.setItem('@GoPizza:user', JSON.stringify(loggedUser))
       AsyncStorage.setItem('@GoPizza:tokens', JSON.stringify(tokens))
     },
-    onError(err) {
+    onError: (err: Error) => {
       Alert.alert('Login', `${err.message}`)
     },
   })
@@ -38,12 +42,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setLoading(true)
-    await login({ variables: { email, password } })
+    await loginMutation({ variables: { email, password } })
     setLoading(false)
   }
 
   return (
-    <AuthContext.Provider value={{ auth, loading }}>
+    <AuthContext.Provider value={{ auth, loading, user }}>
       {children}
     </AuthContext.Provider>
   )
