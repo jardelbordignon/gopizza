@@ -26,7 +26,7 @@ class TokensType {
 }
 
 @ObjectType()
-export class AuthResponse {
+export class LoginResponse {
   @Field(() => UserDTO)
   user: UserDTO
 

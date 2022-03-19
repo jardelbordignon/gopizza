@@ -11,9 +11,12 @@ import { ThemeProvider } from 'styled-components/native'
 
 import { Progress } from 'src/components'
 import { createClient } from 'src/gql/client'
+import { LoginMutation } from 'src/gql/generated/endpointTypes'
 import { AuthProvider } from 'src/hooks/useAuthentication'
 import { SignIn } from 'src/screens/SignIn'
 import theme from 'src/theme'
+
+type TokensType = LoginMutation['login']['tokens']
 
 export const App = () => {
   const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>()
@@ -24,8 +27,8 @@ export const App = () => {
     const tokens = await AsyncStorage.getItem('@GoPizza:tokens')
 
     if (tokens) {
-      const tokensObj = JSON.parse(tokens)
-      accessToken = tokensObj.accessToken
+      const parsedTokens: TokensType = JSON.parse(tokens)
+      accessToken = parsedTokens.accessToken
     }
 
     setClient(createClient(accessToken))

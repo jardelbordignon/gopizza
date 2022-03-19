@@ -1,8 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsEmail, IsString } from 'class-validator'
+import { IsEmail, IsString, IsUUID } from 'class-validator'
 
-@InputType('AuthInput')
-export class AuthInputDTO {
+@InputType('LoginInput')
+export class LoginInputDTO {
   @Field()
   @IsEmail()
   email!: string
@@ -10,4 +10,11 @@ export class AuthInputDTO {
   @Field()
   @IsString()
   password?: string
+}
+
+@InputType('LogoutInput')
+export class LogoutInputDTO {
+  @Field()
+  @IsUUID()
+  userId!: string
 }

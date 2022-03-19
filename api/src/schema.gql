@@ -2,16 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AuthInput {
-  email: String!
-  password: String
-}
-
-type AuthResponse {
-  tokens: TokensType!
-  user: User!
-}
-
 input CreateManyUserTokensInput {
   """Array of records to create"""
   userTokens: [CreateUserToken!]!
@@ -111,6 +101,20 @@ input IDFilterComparison {
   notLike: ID
 }
 
+input LoginInput {
+  email: String!
+  password: String
+}
+
+type LoginResponse {
+  tokens: TokensType!
+  user: User!
+}
+
+input LogoutInput {
+  userId: String!
+}
+
 type Mutation {
   createManyUserTokens(input: CreateManyUserTokensInput!): [UserToken!]!
   createManyUsers(input: CreateManyUsersInput!): [User!]!
@@ -120,7 +124,8 @@ type Mutation {
   deleteManyUsers(input: DeleteManyUsersInput!): DeleteManyResponse!
   deleteOneUser(input: DeleteOneUserInput!): UserDeleteResponse!
   deleteOneUserToken(input: DeleteOneUserTokenInput!): UserTokenDeleteResponse!
-  login(input: AuthInput!): AuthResponse!
+  login(input: LoginInput!): LoginResponse!
+  logout(input: LogoutInput!): Boolean!
   removeUserFromUserToken(input: RemoveUserFromUserTokenInput!): UserToken!
   restoreManyUsers(input: UserFilter!): UpdateManyResponse!
   restoreOneUser(input: ID!): User!

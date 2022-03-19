@@ -1,17 +1,27 @@
 import { useMutation } from '@apollo/client'
 import AsyncStorage from '@react-native-community/async-storage'
-import React, { ReactNode, createContext, useContext, useState } from 'react'
+import React, {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { Alert } from 'react-native'
 
 import { LoginMutation } from 'src/gql/generated/endpointTypes'
-import { LOGIN_MUTATION } from 'src/gql/modules/account/mutations'
+import {
+  LOGIN_MUTATION,
+  LOGOUT_MUTATION,
+} from 'src/gql/modules/account/mutations'
 
-type UserType = LoginMutation['login']['user']
+type UserType = LoginMutation['login']['user'] | null
 
 type AuthContextProps = {
-  auth(email: string, password: string): Promise<void>
-  loading: boolean
-  user?: UserType
+  login(email: string, password: string): Promise<void>
+  logout(userId: string): void
+  logging: boolean
+  user: UserType
 }
 
 type AuthProviderProps = {
@@ -21,8 +31,8 @@ type AuthProviderProps = {
 const AuthContext = createContext({} as AuthContextProps)
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [loading, setLoading] = useState(false)
-  const [user, setUser] = useState<UserType>()
+  const [logging, setLogging] = useState(false)
+  const [user, setUser] = useState<UserType>(null)
 
   const [loginMutation] = useMutation<LoginMutation>(LOGIN_MUTATION, {
     onCompleted: ({ login }) => {
@@ -36,18 +46,44 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     },
   })
 
-  const auth = async (email: string, password: string) => {
+  const [logoutMutation] = useMutation(LOGOUT_MUTATION)
+
+  const login = async (email: string, password: string) => {
     if (!email || !password) {
       return Alert.alert('Autenticação', 'Informe o login e a senha')
     }
 
-    setLoading(true)
+    setLogging(true)
     await loginMutation({ variables: { email, password } })
-    setLoading(false)
+    setLogging(false)
   }
 
+  const logout = (userId: string): void => {
+    logoutMutation({ variables: { userId } })
+    AsyncStorage.removeItem('@GoPizza:user')
+    AsyncStorage.removeItem('@GoPizza:tokens')
+    setUser(null)
+  }
+
+  const loadStoredUser = async () => {
+    setLogging(true)
+
+    const storedUser = await AsyncStorage.getItem('@GoPizza:user')
+
+    if (storedUser) {
+      const parsedUser: UserType = JSON.parse(storedUser)
+      setUser(parsedUser)
+    }
+
+    setLogging(false)
+  }
+
+  useEffect(() => {
+    loadStoredUser()
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ auth, loading, user }}>
+    <AuthContext.Provider value={{ login, logout, logging, user }}>
       {children}
     </AuthContext.Provider>
   )

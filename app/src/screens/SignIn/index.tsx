@@ -11,12 +11,12 @@ export const SignIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const { auth, loading } = useAuth()
+  const { login, logging } = useAuth()
 
   const ios = Platform.OS === 'ios'
 
-  const handleAuth = () => {
-    auth(email, password)
+  const handleLogin = () => {
+    login(email, password)
   }
 
   return (
@@ -49,8 +49,8 @@ export const SignIn = () => {
           <Button
             title="Entrar"
             variant="secondary"
-            isLoading={loading}
-            onPress={handleAuth}
+            isLoading={logging}
+            onPress={handleLogin}
           />
         </S.Content>
       </KeyboardAvoidingView>

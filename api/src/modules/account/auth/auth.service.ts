@@ -6,8 +6,8 @@ import { UserTokenService } from '../user-token/user-token.service'
 import { UserDTO } from '../user/user.dto'
 import { UserService } from '../user/user.service'
 
-import { AuthInputDTO } from './auth.dto'
-import { AuthResponse, AuthenticatedUser } from './auth.type'
+import { LoginInputDTO, LogoutInputDTO } from './auth.dto'
+import { AuthenticatedUser, LoginResponse } from './auth.type'
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,12 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async login({ email, password }: AuthInputDTO): Promise<AuthResponse> {
+  logout({ userId }: LogoutInputDTO): void {
+    // delete the user refreshToken if it exists
+    this.userTokenService.deleteByUserId(userId)
+  }
+
+  async login({ email, password }: LoginInputDTO): Promise<LoginResponse> {
     // const [user] = await this.userService.query({ filter: { email: { eq: email } }, paging: { limit: 1 } })
     const user = await this.userService.findByEmail(email)
 
@@ -29,8 +34,7 @@ export class AuthService {
     if (!passwordMatch)
       throw new UnauthorizedException('Email and password do not match')
 
-    // delete the user refreshToken if it exists
-    await this.userTokenService.deleteByUserId(user.id)
+    this.logout({ userId: user.id })
 
     // generate new tokens
     const accessPayload = { sub: user.id }

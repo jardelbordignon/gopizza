@@ -3,19 +3,25 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 import { UserDTO } from '../user/user.dto'
 
-import { AuthInputDTO } from './auth.dto'
+import { LoginInputDTO, LogoutInputDTO } from './auth.dto'
 import { JwtAuthGuard } from './auth.guard'
 import { AuthService } from './auth.service'
-import { AuthResponse, AuthenticatedUser } from './auth.type'
+import { AuthenticatedUser, LoginResponse } from './auth.type'
 import { CurrentUser } from './current-user.decorator'
 
 @Resolver()
 export class AuthResolver {
   constructor(private service: AuthService) {}
 
-  @Mutation(() => AuthResponse)
-  async login(@Args('input') input: AuthInputDTO): Promise<AuthResponse> {
+  @Mutation(() => LoginResponse)
+  async login(@Args('input') input: LoginInputDTO): Promise<LoginResponse> {
     return this.service.login(input)
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Args('input') input: LogoutInputDTO): boolean {
+    this.service.logout(input)
+    return true
   }
 
   @UseGuards(JwtAuthGuard)
