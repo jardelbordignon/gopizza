@@ -15,4 +15,8 @@ export class UserTokenService extends TypeOrmQueryService<UserToken> {
     const userToken = await this.repo.findOne({ where: { userId } })
     if (userToken) this.repo.delete(userToken.id)
   }
+
+  async findByRefreshToken(refreshToken: string): Promise<UserToken> {
+    return this.repo.findOne({ where: { refreshToken } })
+  }
 }

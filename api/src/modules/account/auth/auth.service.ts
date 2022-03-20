@@ -1,12 +1,26 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { resolve } from 'path'
+
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { compare } from 'bcryptjs'
+import { v4 as uuid } from 'uuid'
 
 import { UserTokenService } from '../user-token/user-token.service'
 import { UserDTO } from '../user/user.dto'
 import { UserService } from '../user/user.service'
 
-import { LoginInputDTO, LogoutInputDTO } from './auth.dto'
+import { IMailProvider } from 'src/base/shared/providers/MailProvider/IMailProvider'
+
+import {
+  LoginInputDTO,
+  LogoutInputDTO,
+  ResetPasswordInputDTO,
+  SendPasswordResetEmailInputDTO,
+} from './auth.dto'
 import { AuthenticatedUser, LoginResponse } from './auth.type'
 
 @Injectable()
@@ -14,12 +28,13 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private userTokenService: UserTokenService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailProvider: IMailProvider
   ) {}
 
-  logout({ userId }: LogoutInputDTO): void {
+  async logout({ userId }: LogoutInputDTO): Promise<void> {
     // delete the user refreshToken if it exists
-    this.userTokenService.deleteByUserId(userId)
+    await this.userTokenService.deleteByUserId(userId)
   }
 
   async login({ email, password }: LoginInputDTO): Promise<LoginResponse> {
@@ -34,7 +49,7 @@ export class AuthService {
     if (!passwordMatch)
       throw new UnauthorizedException('Email and password do not match')
 
-    this.logout({ userId: user.id })
+    await this.logout({ userId: user.id })
 
     // generate new tokens
     const accessPayload = { sub: user.id }
@@ -61,6 +76,68 @@ export class AuthService {
     const tokens = { accessToken, refreshToken }
 
     return { user, tokens }
+  }
+
+  async sendPasswordResetEmail({ email }: SendPasswordResetEmailInputDTO) {
+    const user = await this.userService.findByEmail(email)
+
+    if (!user) {
+      throw new UnauthorizedException('Email does not exists')
+    }
+
+    await this.logout({ userId: user.id })
+
+    const refreshToken = uuid()
+
+    const hour = 1000 * 60 * 60
+    const expiresAt = new Date(Date.now() + 2 * hour)
+
+    await this.userTokenService.createOne({
+      userId: user.id,
+      refreshToken,
+      expiresAt,
+    })
+
+    const templatePath = resolve(
+      'dist',
+      'account',
+      'auth',
+      'view',
+      'forgotPassword.hbs'
+    )
+
+    const variables = {
+      name: user.name,
+      link: `http://localhost:3000/password/reset/${refreshToken}`,
+    }
+
+    this.mailProvider.sendMail(
+      email,
+      'Recuperação de senha',
+      variables,
+      templatePath
+    )
+  }
+
+  async resetPassword({ refreshToken, password }: ResetPasswordInputDTO) {
+    const token = await this.userTokenService.findByRefreshToken(refreshToken)
+
+    if (!token) throw new UnauthorizedException('Token is invalid')
+
+    const expirationDate = new Date(token.expiresAt)
+    const now = new Date()
+
+    const tokenIsExpired = expirationDate < now
+
+    if (tokenIsExpired) throw new UnauthorizedException('Token is invalid')
+
+    const user = await this.userService.findById(token.userId)
+
+    if (!user) throw new NotFoundException('User not found')
+
+    await this.userService.updateOne(token.userId, { password })
+
+    this.logout({ userId: token.userId })
   }
 
   async currentUser(authUser: AuthenticatedUser): Promise<UserDTO> {

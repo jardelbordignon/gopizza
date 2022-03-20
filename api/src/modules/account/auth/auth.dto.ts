@@ -18,3 +18,21 @@ export class LogoutInputDTO {
   @IsUUID()
   userId!: string
 }
+
+@InputType('SendPasswordResetEmailInput')
+export class SendPasswordResetEmailInputDTO {
+  @Field()
+  @IsEmail()
+  email!: string
+}
+
+@InputType('ResetPasswordInput')
+export class ResetPasswordInputDTO {
+  @Field()
+  @IsUUID()
+  refreshToken!: string
+
+  @Field()
+  @IsString()
+  password!: string
+}

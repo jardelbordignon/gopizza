@@ -127,8 +127,10 @@ type Mutation {
   login(input: LoginInput!): LoginResponse!
   logout(input: LogoutInput!): Boolean!
   removeUserFromUserToken(input: RemoveUserFromUserTokenInput!): UserToken!
+  resetPassword(input: ResetPasswordInput!): Boolean!
   restoreManyUsers(input: UserFilter!): UpdateManyResponse!
   restoreOneUser(input: ID!): User!
+  sendPasswordResetEmail(input: SendPasswordResetEmailInput!): Boolean!
   setUserOnUserToken(input: SetUserOnUserTokenInput!): UserToken!
   updateManyUserTokens(input: UpdateManyUserTokensInput!): UpdateManyResponse!
   updateManyUsers(input: UpdateManyUsersInput!): UpdateManyResponse!
@@ -190,6 +192,15 @@ input RemoveUserFromUserTokenInput {
 
   """The id of relation."""
   relationId: ID!
+}
+
+input ResetPasswordInput {
+  password: String!
+  refreshToken: String!
+}
+
+input SendPasswordResetEmailInput {
+  email: String!
 }
 
 input SetUserOnUserTokenInput {
