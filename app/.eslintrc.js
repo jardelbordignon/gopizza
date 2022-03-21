@@ -11,6 +11,7 @@ module.exports = {
         '@typescript-eslint/no-shadow': ['error'],
         'no-shadow': 'off',
         'no-undef': 'off',
+        curly: 'off',
         semi: ['error', 'never'],
         '@typescript-eslint/semi': 'off',
         'import/order': [
@@ -18,11 +19,6 @@ module.exports = {
           {
             groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
             pathGroups: [
-              {
-                pattern: '@lib/**',
-                group: 'external',
-                position: 'after',
-              },
               {
                 pattern: 'src/**',
                 group: 'parent',

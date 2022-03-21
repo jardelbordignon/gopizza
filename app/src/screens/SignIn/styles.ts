@@ -40,12 +40,12 @@ export const Brand = styled.Image.attrs({
   margin-bottom: 32px;
 `
 
-export const ForgotPasswordButton = styled.TouchableOpacity`
+export const AuxiliaryButton = styled.TouchableOpacity`
   align-self: flex-end;
   margin-bottom: 20px;
 `
 
-export const ForgotPasswordLabel = styled.Text`
+export const AuxiliaryButtonLabel = styled.Text`
   font-size: 14px;
 
   ${({ theme }) => css`

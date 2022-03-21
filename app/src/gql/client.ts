@@ -2,19 +2,18 @@
 import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { HttpLink } from '@apollo/client/link/http'
-import { API_ENDPOINT } from 'react-native-dotenv'
+import { API_ENDPOINT, NODE_ENV } from 'react-native-dotenv'
 
-const createHttpLink = () =>
-  new HttpLink({
-    uri: `${API_ENDPOINT}/graphql`,
-  })
+const isDev = NODE_ENV === 'development'
+
+const createHttpLink = () => {
+  const uri = `${API_ENDPOINT}/graphql`
+  if (isDev) console.log('Endpoint uri:', uri)
+  return new HttpLink({ uri })
+}
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, response, operation }) => {
-    if (process.env.NODE_ENV === 'production') {
-      return
-    }
-
     if (graphQLErrors) {
       for (const error of graphQLErrors) {
         console.error(
@@ -39,7 +38,7 @@ export const createClient = (accessToken: string) => {
 
   const apolloClient = new ApolloClient({
     link: ApolloLink.from([errorLink, httpLink]),
-    connectToDevTools: process.env.NODE_ENV !== 'production',
+    connectToDevTools: isDev,
     cache: new InMemoryCache(),
     assumeImmutableResults: true,
     headers: {

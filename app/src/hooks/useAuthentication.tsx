@@ -9,10 +9,16 @@ import React, {
 } from 'react'
 import { Alert } from 'react-native'
 
-import { LoginMutation } from 'src/gql/generated/endpointTypes'
+import {
+  LoginMutation,
+  ResetPasswordMutation,
+  SendPasswordResetEmailMutation,
+} from 'src/gql/generated/endpointTypes'
 import {
   LOGIN_MUTATION,
   LOGOUT_MUTATION,
+  RESET_PASSWORD_MUTATION,
+  SEND_PASSWORD_RESET_EMAIL_MUTATION,
 } from 'src/gql/modules/account/mutations'
 
 type UserType = LoginMutation['login']['user'] | null
@@ -20,7 +26,9 @@ type UserType = LoginMutation['login']['user'] | null
 type AuthContextProps = {
   login(email: string, password: string): Promise<void>
   logout(userId: string): void
-  logging: boolean
+  sendPasswordResetEmail(email: string): void
+  resetPassword(refreshToken: string, password: string): void
+  loading: boolean
   user: UserType
 }
 
@@ -31,7 +39,7 @@ type AuthProviderProps = {
 const AuthContext = createContext({} as AuthContextProps)
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [logging, setLogging] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<UserType>(null)
 
   const [loginMutation] = useMutation<LoginMutation>(LOGIN_MUTATION, {
@@ -48,14 +56,32 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const [logoutMutation] = useMutation(LOGOUT_MUTATION)
 
+  const [sendPasswordResetEmailMutation] =
+    useMutation<SendPasswordResetEmailMutation>(
+      SEND_PASSWORD_RESET_EMAIL_MUTATION,
+      {
+        onCompleted: () => {
+          console.log('Email enviado, redirecionar para a screen de nova senha')
+        },
+        onError: (err: Error) => {
+          Alert.alert('Recuperação de senha', `${err.message}`)
+        },
+      }
+    )
+
+  const [resetPasswordMutation] = useMutation<ResetPasswordMutation>(
+    RESET_PASSWORD_MUTATION,
+    {}
+  )
+
   const login = async (email: string, password: string) => {
     if (!email || !password) {
-      return Alert.alert('Autenticação', 'Informe o login e a senha')
+      return Alert.alert('Autenticação', 'Informe o e-mail e a senha')
     }
 
-    setLogging(true)
+    setLoading(true)
     await loginMutation({ variables: { email, password } })
-    setLogging(false)
+    setLoading(false)
   }
 
   const logout = (userId: string): void => {
@@ -65,8 +91,28 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(null)
   }
 
+  const sendPasswordResetEmail = async (email: string) => {
+    if (!email) {
+      return Alert.alert('Recuperação de senha', 'Informe o e-mail')
+    }
+
+    setLoading(true)
+    await sendPasswordResetEmailMutation({ variables: { email } })
+    setLoading(false)
+  }
+
+  const resetPassword = async (refreshToken: string, password: string) => {
+    if (!refreshToken || !password) {
+      return Alert.alert('Alteração de senha', 'Informe token e a senha')
+    }
+
+    setLoading(true)
+    await resetPasswordMutation({ variables: { refreshToken, password } })
+    setLoading(false)
+  }
+
   const loadStoredUser = async () => {
-    setLogging(true)
+    setLoading(true)
 
     const storedUser = await AsyncStorage.getItem('@GoPizza:user')
 
@@ -75,7 +121,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(parsedUser)
     }
 
-    setLogging(false)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -83,7 +129,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ login, logout, logging, user }}>
+    <AuthContext.Provider
+      value={{
+        login,
+        logout,
+        sendPasswordResetEmail,
+        resetPassword,
+        loading,
+        user,
+      }}>
       {children}
     </AuthContext.Provider>
   )

@@ -33,3 +33,15 @@ export const LOGOUT_MUTATION = gql`
     logout(input: { userId: $userId })
   }
 `
+
+export const SEND_PASSWORD_RESET_EMAIL_MUTATION = gql`
+  mutation sendPasswordResetEmail($email: String!) {
+    sendPasswordResetEmail(input: { email: $email })
+  }
+`
+
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation resetPassword($refreshToken: String!, $password: String!) {
+    resetPassword(input: { refreshToken: $refreshToken, password: $password })
+  }
+`
