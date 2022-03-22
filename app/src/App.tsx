@@ -13,7 +13,7 @@ import { Progress } from 'src/components'
 import { createClient } from 'src/gql/client'
 import { LoginMutation } from 'src/gql/generated/endpointTypes'
 import { AuthProvider } from 'src/hooks/useAuthentication'
-import { SignIn } from 'src/screens/SignIn'
+import { Routes } from 'src/routes'
 import theme from 'src/theme'
 
 type TokensType = LoginMutation['login']['tokens']
@@ -52,7 +52,7 @@ export const App = () => {
 
       <ApolloProvider client={client}>
         <AuthProvider>
-          <SignIn />
+          <Routes />
         </AuthProvider>
       </ApolloProvider>
     </ThemeProvider>
