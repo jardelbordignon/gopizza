@@ -1,7 +1,7 @@
 import React from 'react'
 import { Alert, Platform, TouchableOpacity } from 'react-native'
 
-import { ButtonBack } from 'src/components'
+import { ButtonBack, Picture } from 'src/components'
 
 import * as S from './styles'
 
@@ -19,6 +19,11 @@ export const Product = () => {
           <S.DeleteLabel>Deletar</S.DeleteLabel>
         </TouchableOpacity>
       </S.Header>
+
+      <S.Upload>
+        <Picture uri="" />
+        <S.PickImageButton title="Carregar" variant="secondary" />
+      </S.Upload>
     </S.Wrapper>
   )
 }
