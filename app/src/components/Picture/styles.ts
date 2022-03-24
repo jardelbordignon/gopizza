@@ -3,13 +3,13 @@ import styled, { css } from 'styled-components/native'
 export const Image = styled.Image`
   width: 160px;
   height: 160px;
-  border-radius: 50%;
+  border-radius: 80px;
 `
 
 export const PlaceholderWrapper = styled.View`
   width: 160px;
   height: 160px;
-  border-radius: 50%;
+  border-radius: 80px;
   justify-content: center;
   align-items: center;
 
