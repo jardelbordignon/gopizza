@@ -36,9 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Permitir o acesso a minha localização</string>
+	<string>Permitir o app usar minha localização</string>
   <key>NSCameraUsageDescription</key>
-	<string>Premitir o app acessar minha câmera</string>
+	<string>Permitir o app usar minha câmera</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Permitir o app usar meu microfone</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
