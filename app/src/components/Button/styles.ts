@@ -7,13 +7,14 @@ export type FlexDirType = 'row' | 'column'
 type ButtonProps = {
   variant: VariantType
   flexDir?: FlexDirType
+  icon?: string
 }
 
 export const Container = styled(RectButton)<ButtonProps>`
   flex: 1;
   flex-direction: ${({ flexDir }) => flexDir || 'row'};
-  justify-content: ${({ flexDir }) =>
-    flexDir === 'column' ? 'center' : 'space-between'};
+  justify-content: ${({ flexDir, icon }) =>
+    flexDir === 'column' || !icon ? 'center' : 'space-between'};
   align-items: center;
   width: 100%;
   max-width: 100%;
