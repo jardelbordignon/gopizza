@@ -2,14 +2,11 @@ import { useEffect, useState } from 'react'
 import { PermissionsAndroid } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 
-export const useUserLocation = () => {
+export const useCurrentPosition = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState(false)
-  const [userLocation, setUserLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  })
+  const [position, setPosition] = useState({ latitude: 0, longitude: 0 })
 
-  async function verifyLocationPermission() {
+  const verifyLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
@@ -25,15 +22,15 @@ export const useUserLocation = () => {
 
     if (hasLocationPermission) {
       Geolocation.getCurrentPosition(
-        position =>
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          }),
-        error => console.log(error.code, error.message)
+        ({ coords: { latitude, longitude } }) => {
+          setPosition({ latitude, longitude })
+        },
+        error => {
+          console.error(error)
+        }
       )
     }
   }, [hasLocationPermission])
 
-  return userLocation
+  return position
 }
