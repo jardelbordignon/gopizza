@@ -1,7 +1,7 @@
 import React from 'react'
 import { Alert, Platform, TouchableOpacity } from 'react-native'
 
-import { Button, ButtonBack, Picture } from 'src/components'
+import { Button, ButtonBack, InputPrice, Picture } from 'src/components'
 import { useImageCropPicker } from 'src/hooks/useImageCropPicker'
 import * as CS from 'src/styles/CommonStyles'
 
@@ -44,6 +44,10 @@ export const Product = () => {
           flexDir="column"
         />
       </S.Upload>
+
+      <InputPrice size="P" />
+      <InputPrice size="M" />
+      <InputPrice size="G" />
     </S.Wrapper>
   )
 }

@@ -1,5 +1,6 @@
 export * from './Button'
 export * from './ButtonBack'
 export * from './Input'
+export * from './InputPrice'
 export * from './Picture'
 export * from './Progress'
