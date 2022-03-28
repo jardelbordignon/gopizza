@@ -38,7 +38,7 @@ export const ForgotPassword = () => {
       <Button
         title="Enviar"
         variant="secondary"
-        isLoading={loading}
+        loading={loading}
         onPress={handleSendPasswordResetEmail}
       />
     </>

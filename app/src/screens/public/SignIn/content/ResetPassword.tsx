@@ -46,7 +46,7 @@ export const ResetPassword = () => {
       <Button
         title="Alterar senha"
         variant="secondary"
-        isLoading={loading}
+        loading={loading}
         onPress={handleResetPassword}
       />
     </>

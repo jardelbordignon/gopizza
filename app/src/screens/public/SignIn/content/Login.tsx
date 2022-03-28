@@ -42,7 +42,8 @@ export const Login = () => {
       <Button
         title="Entrar"
         variant="secondary"
-        isLoading={loading}
+        icon="login-variant"
+        loading={loading}
         onPress={handleLogin}
       />
     </>

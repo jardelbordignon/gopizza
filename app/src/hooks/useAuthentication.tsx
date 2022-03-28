@@ -26,8 +26,8 @@ type UserType = LoginMutation['login']['user'] | null
 type AuthContextProps = {
   login(email: string, password: string): Promise<void>
   logout(userId: string): void
-  sendPasswordResetEmail(email: string): void
-  resetPassword(refreshToken: string, password: string): void
+  sendPasswordResetEmail(email: string): Promise<void>
+  resetPassword(refreshToken: string, password: string): Promise<void>
   loading: boolean
   user: UserType
 }

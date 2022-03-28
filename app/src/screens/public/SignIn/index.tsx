@@ -8,11 +8,11 @@ import { SignInContent } from './content'
 import * as S from './styles'
 
 export const SignIn = () => {
-  const ios = Platform.OS === 'ios'
+  const behavior = Platform.OS === 'ios' ? 'padding' : undefined
 
   return (
     <S.Container>
-      <KeyboardAvoidingView behavior={ios ? 'padding' : undefined}>
+      <KeyboardAvoidingView behavior={behavior}>
         <S.Content>
           <S.Brand source={brandImg} />
 
