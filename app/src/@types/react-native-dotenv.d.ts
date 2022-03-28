@@ -1,6 +1,8 @@
 declare module 'react-native-dotenv' {
-  export const NODE_ENV: string
-  export const API_ENDPOINT: string
+  export const ENV: 'development' | 'test' | 'production'
+  export const DEV_API_ENDPOINT: string
+  export const TST_API_ENDPOINT: string
+  export const PRD_API_ENDPOINT: string
   export const FIREBASE_API_KEY: string
   export const FIREBASE_APP_ID: string
   export const FIREBASE_AUTH_DOMAIN: string

@@ -2,13 +2,22 @@
 import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { HttpLink } from '@apollo/client/link/http'
-import { API_ENDPOINT, NODE_ENV } from 'react-native-dotenv'
+import {
+  DEV_API_ENDPOINT,
+  ENV,
+  PRD_API_ENDPOINT,
+  TST_API_ENDPOINT,
+} from 'react-native-dotenv'
 
-const isDev = NODE_ENV === 'development'
+const endpoint =
+  ENV === 'production'
+    ? PRD_API_ENDPOINT
+    : ENV === 'test'
+    ? TST_API_ENDPOINT
+    : DEV_API_ENDPOINT
 
 const createHttpLink = () => {
-  const uri = `${API_ENDPOINT}/graphql`
-  if (isDev) console.log('Endpoint uri:', uri)
+  const uri = `${endpoint}/graphql`
   return new HttpLink({ uri })
 }
 
@@ -38,7 +47,7 @@ export const createClient = (accessToken: string) => {
 
   const apolloClient = new ApolloClient({
     link: ApolloLink.from([errorLink, httpLink]),
-    connectToDevTools: isDev,
+    connectToDevTools: ENV === 'development',
     cache: new InMemoryCache(),
     assumeImmutableResults: true,
     headers: {
