@@ -15,6 +15,7 @@ import { LoginMutation } from 'src/gql/generated/endpointTypes'
 import { AuthProvider } from 'src/hooks/useAuthentication'
 import { Routes } from 'src/routes'
 import theme from 'src/theme'
+import 'src/config/yupLocales'
 
 type TokensType = LoginMutation['login']['tokens']
 

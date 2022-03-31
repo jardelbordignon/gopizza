@@ -1,4 +1,8 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import React from 'react'
+import { useForm } from 'react-hook-form'
+import { KeyboardAvoidingView } from 'react-native'
+import * as yup from 'yup'
 
 import { useSignIn } from '../SignInContext'
 import * as S from '../styles'
@@ -6,35 +10,56 @@ import * as S from '../styles'
 import { Button, Input } from 'src/components'
 import { useAuth } from 'src/hooks/useAuthentication'
 
-export const Login = () => {
-  const { login, loading } = useAuth()
-  const { email, setEmail, password, setPassword, changeContent } = useSignIn()
+type LoginData = {
+  email: string
+  password: string
+}
 
-  const handleLogin = () => {
+const defaultValues: LoginData = {
+  email: '',
+  password: '',
+}
+
+const resolver = yupResolver(
+  yup.object().shape({
+    email: yup.string().required().email(),
+    password: yup.string().required().min(4),
+  })
+)
+
+export const Login = () => {
+  const { changeContent } = useSignIn()
+  const { login, loading } = useAuth()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver, defaultValues, mode: 'onBlur' })
+
+  const onSubmit = async ({ email, password }: LoginData) => {
     login(email, password)
   }
 
   return (
-    <>
+    <KeyboardAvoidingView>
       <S.Title>Login</S.Title>
 
       <Input
-        placeholder="E-mail"
-        variant="secondary"
+        name="email"
+        control={control}
+        error={errors.email}
         autoCorrect={false}
         autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="E-mail"
       />
 
       <Input
+        name="password"
+        control={control}
+        error={errors.password}
         placeholder="Senha"
-        variant="secondary"
         secureTextEntry
-        value={password}
-        onChangeText={setPassword}
       />
-
       <S.AuxiliaryButton onPress={() => changeContent('ForgotPassword')}>
         <S.AuxiliaryButtonLabel>Esqueci minha senha</S.AuxiliaryButtonLabel>
       </S.AuxiliaryButton>
@@ -44,8 +69,8 @@ export const Login = () => {
         variant="secondary"
         icon="login-variant"
         loading={loading}
-        onPress={handleLogin}
+        onPress={() => handleSubmit(onSubmit)()}
       />
-    </>
+    </KeyboardAvoidingView>
   )
 }

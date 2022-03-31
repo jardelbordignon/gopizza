@@ -7,10 +7,13 @@ type InputProps = {
   variant?: VariantType
 }
 
+export const Wrapper = styled.View`
+  margin-bottom: 16px;
+`
+
 export const StyledTextInput = styled(TextInput).attrs<InputProps>(
-  ({ theme, variant }) => ({
-    placeholderTextColor:
-      theme.COLORS[variant === 'primary' ? 'SECONDARY_900' : 'PRIMARY_50'],
+  ({ theme }) => ({
+    placeholderTextColor: theme.COLORS.PRIMARY_50,
   })
 )<InputProps>`
   width: 100%;
@@ -19,11 +22,19 @@ export const StyledTextInput = styled(TextInput).attrs<InputProps>(
   border-radius: 12px;
   font-size: 14px;
   padding: 7px 0 7px 20px;
-  margin-bottom: 16px;
 
-  ${({ theme, variant }) => css`
+  ${({ theme }) => css`
     font-family: ${theme.FONTS.TEXT};
     border: 1px solid ${theme.COLORS.SHAPE};
-    color: ${theme.COLORS[variant === 'primary' ? 'SECONDARY_900' : 'TITLE']};
+    color: ${theme.COLORS.TITLE};
+  `}
+`
+
+export const ErrorMessage = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONTS.TEXT};
+    font-style: italic;
+    color: ${theme.COLORS.TITLE};
+    margin-left: 15px;
   `}
 `

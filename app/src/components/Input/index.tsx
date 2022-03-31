@@ -1,12 +1,37 @@
 import React from 'react'
+import { Control, Controller, FieldError } from 'react-hook-form'
 import { TextInputProps } from 'react-native'
 
-import { StyledTextInput, VariantType } from './styles'
+import * as S from './styles'
 
 type InputProps = TextInputProps & {
-  variant?: VariantType
+  name: string
+  control: Control<any, any>
+  error?: FieldError
+  variant?: S.VariantType
 }
 
-export const Input = ({ variant = 'primary', ...rest }: InputProps) => (
-  <StyledTextInput variant={variant} {...rest} />
+export const Input = ({
+  name,
+  control,
+  error,
+  variant = 'primary',
+  ...rest
+}: InputProps) => (
+  <S.Wrapper>
+    <Controller
+      control={control}
+      name={name}
+      render={({ field: { onChange, value, onBlur } }) => (
+        <S.StyledTextInput
+          value={value}
+          onBlur={onBlur}
+          onChangeText={text => onChange(text)}
+          variant={variant}
+          {...rest}
+        />
+      )}
+    />
+    {error && <S.ErrorMessage>{error.message}</S.ErrorMessage>}
+  </S.Wrapper>
 )
