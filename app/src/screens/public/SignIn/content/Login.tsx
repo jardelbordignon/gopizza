@@ -10,12 +10,12 @@ import * as S from '../styles'
 import { Button, Input } from 'src/components'
 import { useAuth } from 'src/hooks/useAuthentication'
 
-type LoginData = {
+type FormData = {
   email: string
   password: string
 }
 
-const defaultValues: LoginData = {
+const defaultValues: FormData = {
   email: '',
   password: '',
 }
@@ -36,9 +36,9 @@ export const Login = () => {
     formState: { errors },
   } = useForm({ resolver, defaultValues, mode: 'onBlur' })
 
-  const onSubmit = async ({ email, password }: LoginData) => {
-    login(email, password)
-  }
+  const onSubmit = handleSubmit(async ({ email, password }: FormData) => {
+    await login(email, password)
+  })
 
   return (
     <KeyboardAvoidingView>
@@ -69,7 +69,7 @@ export const Login = () => {
         variant="secondary"
         icon="login-variant"
         loading={loading}
-        onPress={() => handleSubmit(onSubmit)()}
+        onPress={onSubmit as any}
       />
     </KeyboardAvoidingView>
   )
