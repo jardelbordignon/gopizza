@@ -1,39 +1,28 @@
-import { yupResolver } from '@hookform/resolvers/yup'
 import React from 'react'
-import { useForm } from 'react-hook-form'
 import { KeyboardAvoidingView } from 'react-native'
-import * as yup from 'yup'
 
 import { useSignIn } from '../SignInContext'
 import * as S from '../styles'
 
 import { Button, Input } from 'src/components'
 import { useAuth } from 'src/hooks/useAuthentication'
+import { YupType, useHookForm } from 'src/hooks/useHookForm'
 
 type FormData = {
   email: string
 }
 
-const defaultValues: FormData = {
-  email: '',
-}
-
-const resolver = yupResolver(
+const yupSchema = (yup: YupType) =>
   yup.object().shape({
     email: yup.string().required().email(),
   })
-)
 
 export const ForgotPassword = () => {
   const { sendPasswordResetEmail, loading } = useAuth()
   const { changeContent } = useSignIn()
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver, defaultValues, mode: 'onBlur' })
+  const { register, handleSubmit } = useHookForm<FormData>({ yupSchema })
 
-  const onSendPasswordResetEmail = handleSubmit(async ({ email }: FormData) => {
+  const onSubmit = handleSubmit(async ({ email }: FormData) => {
     await sendPasswordResetEmail(email)
   })
 
@@ -42,12 +31,11 @@ export const ForgotPassword = () => {
       <S.Title>Esqueci minha senha</S.Title>
 
       <Input
-        name="email"
-        control={control}
-        error={errors.email}
+        {...register('email')}
         autoCorrect={false}
         autoCapitalize="none"
         placeholder="E-mail"
+        variant="secondary"
       />
 
       <S.AuxiliaryButton onPress={() => changeContent('Login')}>
@@ -62,7 +50,7 @@ export const ForgotPassword = () => {
         title="Enviar"
         variant="secondary"
         loading={loading}
-        onPress={onSendPasswordResetEmail as any}
+        onPress={onSubmit as any}
       />
     </KeyboardAvoidingView>
   )

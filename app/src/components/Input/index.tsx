@@ -34,6 +34,8 @@ export const Input = ({
         />
       )}
     />
-    {error && <S.ErrorMessage>{error.message}</S.ErrorMessage>}
+    {error && (
+      <S.ErrorMessage variant={variant}>{error.message}</S.ErrorMessage>
+    )}
   </S.Wrapper>
 )

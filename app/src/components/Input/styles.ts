@@ -29,7 +29,14 @@ export const StyledTextInput = styled(TextInput).attrs<InputProps>(
 
   ${({ theme, variant, isErrored }) => css`
     font-family: ${theme.FONTS.TEXT};
-    border: 1px solid ${theme.COLORS[isErrored ? 'PRIMARY_800' : 'SHAPE']};
+    border: 1px solid
+      ${theme.COLORS[
+        isErrored
+          ? variant === 'secondary'
+            ? 'PRIMARY_50'
+            : 'PRIMARY_800'
+          : 'SHAPE'
+      ]};
     color: ${theme.COLORS[variant === 'secondary' ? 'TITLE' : 'SECONDARY_900']};
   `}
 `
