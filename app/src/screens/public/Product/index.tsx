@@ -3,14 +3,34 @@ import React from 'react'
 import { Alert, Platform, ScrollView, TouchableOpacity } from 'react-native'
 
 import { Button, ButtonBack, Input, InputPrice, Picture } from 'src/components'
+import { YupType, useHookForm } from 'src/hooks/useHookForm'
 import { useImageCropPicker } from 'src/hooks/useImageCropPicker'
 import * as CS from 'src/styles/CommonStyles'
+import { textCounter } from 'src/utils/textCounter'
 
 import * as S from './styles'
+
+type FormData = {
+  name: string
+  description: string
+}
+
+const yupSchema = (yup: YupType) =>
+  yup.object().shape({
+    name: yup.string().required(),
+    description: yup.string().required(),
+  })
 
 export const Product = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
   const { media, openCamera, openPicker } = useImageCropPicker()
+  const { register, isSubmitting, handleSubmit, watch } = useHookForm<FormData>(
+    { yupSchema }
+  )
+
+  const onSubmit = (data: FormData) => console.log(data)
+
+  const onPress = handleSubmit(onSubmit)
 
   return (
     <S.Wrapper behavior={behavior}>
@@ -50,15 +70,22 @@ export const Product = () => {
         <S.Form>
           <S.InputGroup>
             <S.Label>Nome</S.Label>
-            <Input />
+            <Input {...register('name')} />
           </S.InputGroup>
 
           <S.InputGroup>
             <S.InputGroupHeader>
               <S.Label>Descrição</S.Label>
-              <S.MaxCharacters>0 de 60 caracteres</S.MaxCharacters>
+              <S.MaxCharacters>
+                {textCounter(watch('description'), 150)}
+              </S.MaxCharacters>
             </S.InputGroupHeader>
-            <Input multiline maxLength={60} style={{ height: 80 }} />
+            <Input
+              {...register('description')}
+              multiline
+              maxLength={150}
+              style={{ height: 60 }}
+            />
           </S.InputGroup>
 
           <S.InputGroup>
@@ -68,7 +95,11 @@ export const Product = () => {
             <InputPrice size="G" />
           </S.InputGroup>
 
-          <Button title="Cadastrar pizza" />
+          <Button
+            title="Cadastrar pizza"
+            onPress={onPress as any}
+            loading={isSubmitting}
+          />
         </S.Form>
       </ScrollView>
     </S.Wrapper>

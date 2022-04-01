@@ -5,15 +5,19 @@ export type VariantType = 'primary' | 'secondary'
 
 type InputProps = {
   variant?: VariantType
+  isFocused?: boolean
+  isErrored?: boolean
+  isFilled?: boolean
 }
 
-export const Wrapper = styled.View`
+export const Wrapper = styled.View<InputProps>`
   margin-bottom: 16px;
 `
 
 export const StyledTextInput = styled(TextInput).attrs<InputProps>(
-  ({ theme }) => ({
-    placeholderTextColor: theme.COLORS.PRIMARY_50,
+  ({ theme, variant }) => ({
+    placeholderTextColor:
+      theme.COLORS[variant === 'secondary' ? 'TITLE' : 'SECONDARY_900'],
   })
 )<InputProps>`
   width: 100%;
@@ -23,18 +27,18 @@ export const StyledTextInput = styled(TextInput).attrs<InputProps>(
   font-size: 14px;
   padding: 7px 0 7px 20px;
 
-  ${({ theme }) => css`
+  ${({ theme, variant, isErrored }) => css`
     font-family: ${theme.FONTS.TEXT};
-    border: 1px solid ${theme.COLORS.SHAPE};
-    color: ${theme.COLORS.TITLE};
+    border: 1px solid ${theme.COLORS[isErrored ? 'PRIMARY_800' : 'SHAPE']};
+    color: ${theme.COLORS[variant === 'secondary' ? 'TITLE' : 'SECONDARY_900']};
   `}
 `
 
-export const ErrorMessage = styled.Text`
-  ${({ theme }) => css`
+export const ErrorMessage = styled.Text<InputProps>`
+  ${({ theme, variant }) => css`
     font-family: ${theme.FONTS.TEXT};
     font-style: italic;
-    color: ${theme.COLORS.TITLE};
+    color: ${theme.COLORS[variant === 'secondary' ? 'TITLE' : 'PRIMARY_800']};
     margin-left: 15px;
   `}
 `

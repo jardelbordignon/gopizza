@@ -28,6 +28,8 @@ export const Input = ({
           onBlur={onBlur}
           onChangeText={text => onChange(text)}
           variant={variant}
+          isErrored={!!error}
+          isFilled={!!value}
           {...rest}
         />
       )}
