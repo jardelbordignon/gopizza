@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateManyProductsInput {
+  """Array of records to create"""
+  products: [CreateProduct!]!
+}
+
 input CreateManyUserTokensInput {
   """Array of records to create"""
   userTokens: [CreateUserToken!]!
@@ -12,6 +17,11 @@ input CreateManyUsersInput {
   users: [CreateUser!]!
 }
 
+input CreateOneProductInput {
+  """The record to create"""
+  product: CreateProduct!
+}
+
 input CreateOneUserInput {
   """The record to create"""
   user: CreateUser!
@@ -20,6 +30,11 @@ input CreateOneUserInput {
 input CreateOneUserTokenInput {
   """The record to create"""
   userToken: CreateUserToken!
+}
+
+input CreateProduct {
+  imageFile: UploadScalar!
+  name: String!
 }
 
 input CreateUser {
@@ -59,6 +74,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input DeleteManyProductsInput {
+  """Filter to find records to delete"""
+  filter: ProductDeleteFilter!
+}
+
 type DeleteManyResponse {
   """The number of records deleted."""
   deletedCount: Int!
@@ -72,6 +92,11 @@ input DeleteManyUserTokensInput {
 input DeleteManyUsersInput {
   """Filter to find records to delete"""
   filter: UserDeleteFilter!
+}
+
+input DeleteOneProductInput {
+  """The id of the record to delete."""
+  id: ID!
 }
 
 input DeleteOneUserInput {
@@ -116,24 +141,33 @@ input LogoutInput {
 }
 
 type Mutation {
+  createManyProducts(input: CreateManyProductsInput!): [Product!]!
   createManyUserTokens(input: CreateManyUserTokensInput!): [UserToken!]!
   createManyUsers(input: CreateManyUsersInput!): [User!]!
+  createOneProduct(input: CreateOneProductInput!): Product!
   createOneUser(input: CreateOneUserInput!): User!
   createOneUserToken(input: CreateOneUserTokenInput!): UserToken!
+  createProduct(input: CreateProduct!): Product!
+  deleteManyProducts(input: DeleteManyProductsInput!): DeleteManyResponse!
   deleteManyUserTokens(input: DeleteManyUserTokensInput!): DeleteManyResponse!
   deleteManyUsers(input: DeleteManyUsersInput!): DeleteManyResponse!
+  deleteOneProduct(input: DeleteOneProductInput!): ProductDeleteResponse!
   deleteOneUser(input: DeleteOneUserInput!): UserDeleteResponse!
   deleteOneUserToken(input: DeleteOneUserTokenInput!): UserTokenDeleteResponse!
   login(input: LoginInput!): LoginResponse!
   logout(input: LogoutInput!): Boolean!
   removeUserFromUserToken(input: RemoveUserFromUserTokenInput!): UserToken!
   resetPassword(input: ResetPasswordInput!): Boolean!
+  restoreManyProducts(input: ProductFilter!): UpdateManyResponse!
   restoreManyUsers(input: UserFilter!): UpdateManyResponse!
+  restoreOneProduct(input: ID!): Product!
   restoreOneUser(input: ID!): User!
   sendPasswordResetEmail(input: SendPasswordResetEmailInput!): Boolean!
   setUserOnUserToken(input: SetUserOnUserTokenInput!): UserToken!
+  updateManyProducts(input: UpdateManyProductsInput!): UpdateManyResponse!
   updateManyUserTokens(input: UpdateManyUserTokensInput!): UpdateManyResponse!
   updateManyUsers(input: UpdateManyUsersInput!): UpdateManyResponse!
+  updateOneProduct(input: UpdateOneProductInput!): Product!
   updateOneUser(input: UpdateOneUserInput!): User!
   updateOneUserToken(input: UpdateOneUserTokenInput!): UserToken!
 }
@@ -154,8 +188,127 @@ input OffsetPaging {
   offset: Int
 }
 
+type Product {
+  createdAt: DateTime!
+  deletedAt: DateTime
+  id: ID!
+  image: String
+  name: String!
+  updatedAt: DateTime
+}
+
+type ProductAggregateGroupBy {
+  createdAt: DateTime
+  deletedAt: DateTime
+  id: ID
+  name: String
+  updatedAt: DateTime
+}
+
+type ProductConnection {
+  """Array of nodes."""
+  nodes: [Product!]!
+
+  """Paging information"""
+  pageInfo: OffsetPageInfo!
+
+  """Fetch total count of records"""
+  totalCount: Int!
+}
+
+type ProductCountAggregate {
+  createdAt: Int
+  deletedAt: Int
+  id: Int
+  name: Int
+  updatedAt: Int
+}
+
+input ProductDeleteFilter {
+  and: [ProductDeleteFilter!]
+  createdAt: DateFieldComparison
+  deletedAt: DateFieldComparison
+  id: IDFilterComparison
+  name: StringFieldComparison
+  or: [ProductDeleteFilter!]
+  updatedAt: DateFieldComparison
+}
+
+type ProductDeleteResponse {
+  createdAt: DateTime
+  deletedAt: DateTime
+  id: ID
+  image: String
+  name: String
+  updatedAt: DateTime
+}
+
+input ProductFilter {
+  and: [ProductFilter!]
+  createdAt: DateFieldComparison
+  deletedAt: DateFieldComparison
+  id: IDFilterComparison
+  name: StringFieldComparison
+  or: [ProductFilter!]
+  updatedAt: DateFieldComparison
+}
+
+type ProductMaxAggregate {
+  createdAt: DateTime
+  deletedAt: DateTime
+  id: ID
+  name: String
+  updatedAt: DateTime
+}
+
+type ProductMinAggregate {
+  createdAt: DateTime
+  deletedAt: DateTime
+  id: ID
+  name: String
+  updatedAt: DateTime
+}
+
+input ProductSort {
+  direction: SortDirection!
+  field: ProductSortFields!
+  nulls: SortNulls
+}
+
+enum ProductSortFields {
+  createdAt
+  deletedAt
+  id
+  name
+  updatedAt
+}
+
+input ProductUpdateFilter {
+  and: [ProductUpdateFilter!]
+  createdAt: DateFieldComparison
+  deletedAt: DateFieldComparison
+  id: IDFilterComparison
+  name: StringFieldComparison
+  or: [ProductUpdateFilter!]
+  updatedAt: DateFieldComparison
+}
+
 type Query {
   me: User!
+  product(
+    """The id of the record to find."""
+    id: ID!
+  ): Product
+  products(
+    """Specify to filter the records returned."""
+    filter: ProductFilter = {}
+
+    """Limit or page results."""
+    paging: OffsetPaging = {limit: 10}
+
+    """Specify to sort results."""
+    sorting: [ProductSort!] = []
+  ): ProductConnection!
   user(
     """The id of the record to find."""
     id: ID!
@@ -245,6 +398,14 @@ type TokensType {
   refreshToken: String!
 }
 
+input UpdateManyProductsInput {
+  """Filter used to find fields to update"""
+  filter: ProductUpdateFilter!
+
+  """The update to apply to all records found using the filter"""
+  update: UpdateProduct!
+}
+
 type UpdateManyResponse {
   """The number of records updated."""
   updatedCount: Int!
@@ -266,6 +427,14 @@ input UpdateManyUsersInput {
   update: UpdateUser!
 }
 
+input UpdateOneProductInput {
+  """The id of the record to update"""
+  id: ID!
+
+  """The update to apply."""
+  update: UpdateProduct!
+}
+
 input UpdateOneUserInput {
   """The id of the record to update"""
   id: ID!
@@ -282,6 +451,11 @@ input UpdateOneUserTokenInput {
   update: UpdateUserToken!
 }
 
+input UpdateProduct {
+  imageFile: UploadScalar
+  name: String
+}
+
 input UpdateUser {
   email: String
   name: String
@@ -294,6 +468,8 @@ input UpdateUserToken {
   refreshToken: String
   userId: String
 }
+
+scalar UploadScalar
 
 type User {
   createdAt: DateTime!
