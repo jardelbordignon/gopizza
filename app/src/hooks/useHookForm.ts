@@ -1,30 +1,30 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { FieldError, ValidationMode, useForm } from 'react-hook-form'
+import { ValidationMode, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 export type YupType = typeof yup
 
-type UseHookFormProps = {
+type UseHookFormType = {
   yupSchema: (yup: YupType) => yup.ObjectSchema<any>
   mode?: keyof ValidationMode
 }
 
-export const useHookForm = <Type extends { [key: string]: any }>({
+export const useHookForm = <T extends { [key: string]: any }>({
   yupSchema,
   mode = 'onBlur',
-}: UseHookFormProps) => {
+}: UseHookFormType) => {
   const resolver = yupResolver(yupSchema(yup))
 
-  const { control, handleSubmit, formState, getValues, watch } = useForm<Type>({
+  const { control, handleSubmit, formState, getValues, watch } = useForm({
     mode,
     resolver,
   })
   const { errors, isSubmitting } = formState
 
-  const register = (name: string) => ({
+  const register = (name: keyof T) => ({
     name,
     control,
-    error: errors[name] as FieldError,
+    error: errors[`${name}`],
   })
 
   return { register, isSubmitting, handleSubmit, getValues, watch }
