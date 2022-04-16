@@ -25,7 +25,7 @@ export const uploadsFolder = resolve(
 export const handleUpload = async (file) => {
   const { createReadStream, filename } = await file
   const stream = createReadStream()
-  const storedFileName = `${uuid()}-${filename}`
+  const storedFileName = `${uuid()}${filename}`
 
   const tmpFolder = resolve(uploadsFolder, 'tmp')
   if (!existsSync(tmpFolder)) mkdirSync(tmpFolder)
