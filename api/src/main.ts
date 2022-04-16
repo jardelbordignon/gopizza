@@ -13,7 +13,10 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(AppModule)
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
-  app.use(graphqlUploadExpress({ maxFiles: 20, maxFileSize: 10000000 })) // 10 MB
+  app.use(
+    '/graphql',
+    graphqlUploadExpress({ maxFiles: 20, maxFileSize: 10000000 }) // 10 MB
+  )
   app.use('/images', publicFolder(uploadsFolder))
 
   app.listen(PORT).then(() => logger.log(`🚀 Server started on port ${PORT}`))

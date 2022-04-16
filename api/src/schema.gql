@@ -4,7 +4,7 @@
 
 input CreateManyProductsInput {
   """Array of records to create"""
-  products: [CreateProduct!]!
+  products: [CustomCreateOneProduct!]!
 }
 
 input CreateManyUserTokensInput {
@@ -19,7 +19,7 @@ input CreateManyUsersInput {
 
 input CreateOneProductInput {
   """The record to create"""
-  product: CreateProduct!
+  product: CustomCreateOneProduct!
 }
 
 input CreateOneUserInput {
@@ -32,11 +32,6 @@ input CreateOneUserTokenInput {
   userToken: CreateUserToken!
 }
 
-input CreateProduct {
-  imageFile: UploadScalar!
-  name: String!
-}
-
 input CreateUser {
   email: String!
   name: String!
@@ -47,6 +42,15 @@ input CreateUserToken {
   expiresAt: DateTime!
   refreshToken: String!
   userId: String!
+}
+
+input CustomCreateOneProduct {
+  description: String!
+  imageFile: UploadScalar!
+  name: String!
+  priceSizeG: Float!
+  priceSizeM: Float!
+  priceSizeP: Float!
 }
 
 input DateFieldComparison {
@@ -147,7 +151,7 @@ type Mutation {
   createOneProduct(input: CreateOneProductInput!): Product!
   createOneUser(input: CreateOneUserInput!): User!
   createOneUserToken(input: CreateOneUserTokenInput!): UserToken!
-  createProduct(input: CreateProduct!): Product!
+  customCreateOneProduct(input: CustomCreateOneProduct!): Product!
   deleteManyProducts(input: DeleteManyProductsInput!): DeleteManyResponse!
   deleteManyUserTokens(input: DeleteManyUserTokensInput!): DeleteManyResponse!
   deleteManyUsers(input: DeleteManyUsersInput!): DeleteManyResponse!
@@ -172,6 +176,26 @@ type Mutation {
   updateOneUserToken(input: UpdateOneUserTokenInput!): UserToken!
 }
 
+input NumberFieldComparison {
+  between: NumberFieldComparisonBetween
+  eq: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  is: Boolean
+  isNot: Boolean
+  lt: Float
+  lte: Float
+  neq: Float
+  notBetween: NumberFieldComparisonBetween
+  notIn: [Float!]
+}
+
+input NumberFieldComparisonBetween {
+  lower: Float!
+  upper: Float!
+}
+
 type OffsetPageInfo {
   """true if paging forward and there are more records."""
   hasNextPage: Boolean
@@ -191,18 +215,32 @@ input OffsetPaging {
 type Product {
   createdAt: DateTime!
   deletedAt: DateTime
+  description: String!
   id: ID!
-  image: String
+  imageUrl: String
   name: String!
+  priceSizeG: Float!
+  priceSizeM: Float!
+  priceSizeP: Float!
   updatedAt: DateTime
 }
 
 type ProductAggregateGroupBy {
   createdAt: DateTime
   deletedAt: DateTime
+  description: String
   id: ID
   name: String
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
   updatedAt: DateTime
+}
+
+type ProductAvgAggregate {
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
 }
 
 type ProductConnection {
@@ -219,8 +257,12 @@ type ProductConnection {
 type ProductCountAggregate {
   createdAt: Int
   deletedAt: Int
+  description: Int
   id: Int
   name: Int
+  priceSizeG: Int
+  priceSizeM: Int
+  priceSizeP: Int
   updatedAt: Int
 }
 
@@ -228,18 +270,26 @@ input ProductDeleteFilter {
   and: [ProductDeleteFilter!]
   createdAt: DateFieldComparison
   deletedAt: DateFieldComparison
+  description: StringFieldComparison
   id: IDFilterComparison
   name: StringFieldComparison
   or: [ProductDeleteFilter!]
+  priceSizeG: NumberFieldComparison
+  priceSizeM: NumberFieldComparison
+  priceSizeP: NumberFieldComparison
   updatedAt: DateFieldComparison
 }
 
 type ProductDeleteResponse {
   createdAt: DateTime
   deletedAt: DateTime
+  description: String
   id: ID
-  image: String
+  imageUrl: String
   name: String
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
   updatedAt: DateTime
 }
 
@@ -247,25 +297,37 @@ input ProductFilter {
   and: [ProductFilter!]
   createdAt: DateFieldComparison
   deletedAt: DateFieldComparison
+  description: StringFieldComparison
   id: IDFilterComparison
   name: StringFieldComparison
   or: [ProductFilter!]
+  priceSizeG: NumberFieldComparison
+  priceSizeM: NumberFieldComparison
+  priceSizeP: NumberFieldComparison
   updatedAt: DateFieldComparison
 }
 
 type ProductMaxAggregate {
   createdAt: DateTime
   deletedAt: DateTime
+  description: String
   id: ID
   name: String
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
   updatedAt: DateTime
 }
 
 type ProductMinAggregate {
   createdAt: DateTime
   deletedAt: DateTime
+  description: String
   id: ID
   name: String
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
   updatedAt: DateTime
 }
 
@@ -278,18 +340,32 @@ input ProductSort {
 enum ProductSortFields {
   createdAt
   deletedAt
+  description
   id
   name
+  priceSizeG
+  priceSizeM
+  priceSizeP
   updatedAt
+}
+
+type ProductSumAggregate {
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
 }
 
 input ProductUpdateFilter {
   and: [ProductUpdateFilter!]
   createdAt: DateFieldComparison
   deletedAt: DateFieldComparison
+  description: StringFieldComparison
   id: IDFilterComparison
   name: StringFieldComparison
   or: [ProductUpdateFilter!]
+  priceSizeG: NumberFieldComparison
+  priceSizeM: NumberFieldComparison
+  priceSizeP: NumberFieldComparison
   updatedAt: DateFieldComparison
 }
 
@@ -452,8 +528,12 @@ input UpdateOneUserTokenInput {
 }
 
 input UpdateProduct {
+  description: String
   imageFile: UploadScalar
   name: String
+  priceSizeG: Float
+  priceSizeM: Float
+  priceSizeP: Float
 }
 
 input UpdateUser {

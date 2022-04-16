@@ -8,5 +8,17 @@ export class Product extends SoftEntity {
   name: string
 
   @Column({ nullable: true })
-  image: string
+  description: string
+
+  @Column({ nullable: true })
+  priceSizeP: number
+
+  @Column({ nullable: true })
+  priceSizeM: number
+
+  @Column({ nullable: true })
+  priceSizeG: number
+
+  @Column({ nullable: true })
+  imageUrl: string
 }

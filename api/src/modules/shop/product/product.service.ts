@@ -6,7 +6,7 @@ import { Repository } from 'typeorm'
 
 import { storageProvider } from 'src/base/shared/providers/StorageProvider/implementations'
 
-import { CreateProductDTO } from './product.dto'
+import { CustomCreateOneProductDTO, ProductDTO } from './product.dto'
 import { Product } from './product.entity'
 
 @Injectable()
@@ -16,12 +16,14 @@ export class ProductService extends TypeOrmQueryService<Product> {
     super(repo, { useSoftDelete: true })
   }
 
-  async createProduct(input: CreateProductDTO): Promise<Product> {
-    const { name, imageFile } = input
+  async customCreateOneProduct(
+    input: CustomCreateOneProductDTO
+  ): Promise<ProductDTO> {
+    const imageUrl = await storageProvider.store(input.imageFile, 'products')
 
-    const image = await storageProvider.store(imageFile, 'products')
+    const productData = { ...input, imageUrl }
 
-    const product = this.repo.create({ name, image })
+    const product = this.repo.create(productData)
 
     return this.repo.save(product)
   }
