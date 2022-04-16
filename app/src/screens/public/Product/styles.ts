@@ -41,9 +41,9 @@ export const DeleteLabel = styled.Text`
 export const Upload = styled.View`
   width: 100%;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin: 32px 0;
+  padding: 24px;
 `
 
 export const PickImageButton = styled(Button)`

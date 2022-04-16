@@ -1,36 +1,62 @@
 /* eslint-disable react-native/no-inline-styles */
+import { useMutation } from '@apollo/client'
 import React from 'react'
 import { Alert, Platform, ScrollView, TouchableOpacity } from 'react-native'
 
 import { Button, ButtonBack, Input, InputPrice, Picture } from 'src/components'
+import {
+  CustomCreateOneProductMutation,
+  CustomCreateOneProductMutationOptions,
+  CustomCreateOneProductMutationVariables,
+} from 'src/gql/generated/endpointTypes'
+import { CUSTOM_CREATE_ONE_PRODUCT_MUTATION } from 'src/gql/modules/product/mutations'
 import { YupType, useHookForm } from 'src/hooks/useHookForm'
-import { useImageCropPicker } from 'src/hooks/useImageCropPicker'
-import * as CS from 'src/styles/CommonStyles'
+import { useImagePicker } from 'src/hooks/useImagePicker'
 import { textCounter } from 'src/utils/textCounter'
 
 import * as S from './styles'
-
-type FormData = {
-  name: string
-  description: string
-}
 
 const yupSchema = (yup: YupType) =>
   yup.object().shape({
     name: yup.string().required(),
     description: yup.string().required(),
+    priceSizeP: yup.number().required(),
+    priceSizeM: yup.number().required(),
+    priceSizeG: yup.number().required(),
+    // imageFile: yup.mixed().required(),
+    // .test('fileFormat', 'Image only', value => {
+    //   return value && ['image/*'].includes(value.type)
+    // }),
   })
 
 export const Product = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
-  const { media, openCamera, openPicker } = useImageCropPicker()
-  const { register, isSubmitting, handleSubmit, watch } = useHookForm<FormData>(
-    { yupSchema }
+  const { assets, openCamera, openLibrary, assetsToRNFiles } = useImagePicker()
+  const { register, isSubmitting, handleSubmit, watch } =
+    useHookForm<CustomCreateOneProductMutationVariables>({ yupSchema })
+
+  const [customCreateOneProduct] = useMutation<CustomCreateOneProductMutation>(
+    CUSTOM_CREATE_ONE_PRODUCT_MUTATION,
+    {
+      onCompleted: () => {
+        console.log('Produto cadastrado')
+      },
+      onError: (err: Error) => {
+        Alert.alert('Cadastro de Produto', `${err.message}`)
+      },
+    }
   )
 
-  const onSubmit = (data: FormData) => console.log(data)
+  const onSubmit = async (data: CustomCreateOneProductMutationOptions) => {
+    try {
+      const imageFile = assetsToRNFiles()[0]
+      customCreateOneProduct({ variables: { ...data, imageFile, a: 'b' } })
+    } catch (err) {
+      console.log('error creating product:', err)
+    }
+  }
 
-  const onPress = handleSubmit(onSubmit)
+  const onPress = handleSubmit<FormData>(onSubmit)
 
   return (
     <S.Wrapper behavior={behavior}>
@@ -46,9 +72,8 @@ export const Product = () => {
         </S.Header>
 
         <S.Upload>
-          <Picture uri={media ? media.path : null} />
+          <Picture uri={assets.length ? assets[0].path : null} />
 
-          <CS.Spacer width="30px" />
           <Button
             onPress={openCamera}
             icon="camera"
@@ -57,9 +82,8 @@ export const Product = () => {
             flexDir="column"
           />
 
-          <CS.Spacer width="5px" />
           <Button
-            onPress={openPicker}
+            onPress={openLibrary}
             icon="image-multiple"
             title="Galeria"
             variant="secondary"
@@ -90,9 +114,9 @@ export const Product = () => {
 
           <S.InputGroup>
             <S.Label>Tamanhos e preços</S.Label>
-            <InputPrice size="P" />
-            <InputPrice size="M" />
-            <InputPrice size="G" />
+            <InputPrice size="P" {...register('priceSizeP')} />
+            <InputPrice size="M" {...register('priceSizeM')} />
+            <InputPrice size="G" {...register('priceSizeG')} />
           </S.InputGroup>
 
           <Button
