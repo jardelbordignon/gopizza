@@ -1,24 +1,14 @@
 // https://dev.to/harrisonhenri/creating-a-react-native-app-using-apollo-graphql-v3-gj5
 import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
-import { HttpLink } from '@apollo/client/link/http'
-import {
-  DEV_API_ENDPOINT,
-  ENV,
-  PRD_API_ENDPOINT,
-  TST_API_ENDPOINT,
-} from 'react-native-dotenv'
+import { createUploadLink } from 'apollo-upload-client'
 
-const endpoint =
-  ENV === 'production'
-    ? PRD_API_ENDPOINT
-    : ENV === 'test'
-    ? TST_API_ENDPOINT
-    : DEV_API_ENDPOINT
+import { env } from 'src/config/environment'
 
-const createHttpLink = () => {
-  const uri = `${endpoint}/graphql`
-  return new HttpLink({ uri })
+const createLink = () => {
+  const uri = `${env.apiUrl}/graphql`
+  // console.log('uri', uri)
+  return createUploadLink({ uri })
 }
 
 const errorLink = onError(
@@ -33,23 +23,17 @@ const errorLink = onError(
       }
     }
     if (networkError) {
-      console.error(
-        `[Network error]: ${JSON.stringify(networkError, null, 2)}`,
-        operation,
-        response
-      )
+      console.error('[Network error]:', networkError, operation, response)
     }
   }
 )
 
 export const createClient = (accessToken: string) => {
-  const httpLink = createHttpLink()
+  const link = createLink()
 
   const apolloClient = new ApolloClient({
-    link: ApolloLink.from([errorLink, httpLink]),
-    connectToDevTools: ENV === 'development',
+    link: ApolloLink.from([errorLink, link]),
     cache: new InMemoryCache(),
-    assumeImmutableResults: true,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
