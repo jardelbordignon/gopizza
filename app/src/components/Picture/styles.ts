@@ -1,19 +1,26 @@
 import styled, { css } from 'styled-components/native'
 
-export const Image = styled.Image`
-  width: 160px;
-  height: 160px;
-  border-radius: 80px;
-`
+type PictureProps = {
+  size?: string
+}
 
-export const PlaceholderWrapper = styled.View`
-  width: 160px;
-  height: 160px;
-  border-radius: 80px;
+export const Image = styled.Image<PictureProps>`
+  ${({ size }) => css`
+    width: ${size || '160px'};
+    height: ${size || '160px'};
+    border-radius: ${size || '160px'};
+  `}
+`
+export const PlaceholderWrapper = styled.View<PictureProps>`
   justify-content: center;
   align-items: center;
 
-  border: 1px dashed ${({ theme }) => theme.COLORS.ALERT_900};
+  ${({ theme, size }) => css`
+    width: ${size || '160px'};
+    height: ${size || '160px'};
+    border-radius: ${size || '160px'};
+    border: 1px dashed ${theme.COLORS.ALERT_900};
+  `}
 `
 
 export const Placeholder = styled.Text`
