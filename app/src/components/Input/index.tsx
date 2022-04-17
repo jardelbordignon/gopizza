@@ -4,12 +4,12 @@ import { TextInputProps } from 'react-native'
 
 import * as S from './styles'
 
-type InputProps = TextInputProps & {
-  name: string
-  control: Control<any, any>
-  error?: FieldError
-  variant?: S.VariantType
-}
+type InputProps = S.InputStylesProps &
+  TextInputProps & {
+    name: string
+    control: Control<any, any>
+    error?: FieldError
+  }
 
 export const Input = ({
   name,
