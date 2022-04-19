@@ -6,7 +6,11 @@ import { Repository } from 'typeorm'
 
 import { storageProvider } from 'src/base/shared/providers/StorageProvider/implementations'
 
-import { CustomCreateOneProductDTO, ProductDTO } from './product.dto'
+import {
+  CustomCreateOneProductDTO,
+  CustomUpdateOneProductDTO,
+  ProductDTO,
+} from './product.dto'
 import { Product } from './product.entity'
 
 @Injectable()
@@ -26,5 +30,20 @@ export class ProductService extends TypeOrmQueryService<Product> {
     const product = this.repo.create(productData)
 
     return this.repo.save(product)
+  }
+
+  async customUpdateOneProduct(
+    input: CustomUpdateOneProductDTO
+  ): Promise<ProductDTO> {
+    const product = await this.repo.findOne(input.id)
+
+    const mergedProduct = Object.assign(product, input)
+
+    if (input.imageFile) {
+      const imageUrl = await storageProvider.store(input.imageFile, 'products')
+      mergedProduct.imageUrl = imageUrl
+    }
+
+    return this.repo.save(mergedProduct)
   }
 }

@@ -152,6 +152,7 @@ type Mutation {
   createOneUser(input: CreateOneUserInput!): User!
   createOneUserToken(input: CreateOneUserTokenInput!): UserToken!
   customCreateOneProduct(input: CustomCreateOneProduct!): Product!
+  customUpdateOneProduct(input: UpdateProduct!): Product!
   deleteManyProducts(input: DeleteManyProductsInput!): DeleteManyResponse!
   deleteManyUserTokens(input: DeleteManyUserTokensInput!): DeleteManyResponse!
   deleteManyUsers(input: DeleteManyUsersInput!): DeleteManyResponse!
@@ -529,6 +530,7 @@ input UpdateOneUserTokenInput {
 
 input UpdateProduct {
   description: String
+  id: String!
   imageFile: UploadScalar
   name: String
   priceSizeG: Float

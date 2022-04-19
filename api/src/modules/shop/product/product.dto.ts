@@ -55,4 +55,6 @@ export class CustomCreateOneProductDTO {
 @InputType('UpdateProduct')
 export class CustomUpdateOneProductDTO extends PartialType(
   CustomCreateOneProductDTO
-) {}
+) {
+  id: string
+}
