@@ -2,15 +2,6 @@ import { TextInput } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import styled, { css } from 'styled-components/native'
 
-type VariantType = 'primary' | 'secondary'
-
-export type InputStylesProps = {
-  variant?: VariantType
-  isFocused?: boolean
-  isErrored?: boolean
-  isFilled?: boolean
-}
-
 export const Wrapper = styled.View`
   width: 100%;
   flex-direction: row;
@@ -50,13 +41,4 @@ export const SearchButton = styled(RectButton)`
   background-color: ${({ theme }) => theme.COLORS.SUCCESS_900};
   border-radius: 18px;
   margin-left: 7px;
-`
-
-export const ErrorMessage = styled.Text<InputStylesProps>`
-  ${({ theme, variant }) => css`
-    font-family: ${theme.FONTS.TEXT};
-    font-style: italic;
-    color: ${theme.COLORS[variant === 'secondary' ? 'TITLE' : 'PRIMARY_800']};
-    margin-left: 15px;
-  `}
 `
