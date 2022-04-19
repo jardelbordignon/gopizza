@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import * as S from './styles'
 
 interface IPicture {
-  uri: string | null
+  uri?: string | null
   size?: string
 }
 
 export const Picture = ({ uri, size }: IPicture) => {
-  if (uri) return <S.Image source={{ uri }} size={size} />
+  const [valid, setValid] = useState(true)
+
+  if (typeof uri === 'string' && valid) {
+    return (
+      <S.Image source={{ uri }} size={size} onError={() => setValid(false)} />
+    )
+  }
 
   return (
     <S.PlaceholderWrapper size={size}>
