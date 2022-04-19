@@ -11,7 +11,7 @@ import * as S from './styles'
 
 export type ProductProps = {
   id: string
-  imageUrl: string
+  imageUrl?: string | null
   name: string
   description: string
 }

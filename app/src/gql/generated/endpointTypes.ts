@@ -1256,4 +1256,3 @@ export type CustomCreateOneProductMutationOptions = Apollo.BaseMutationOptions<C
   "possibleTypes": {}
 };
       export default result;
-    
