@@ -16,6 +16,9 @@ export const PRODUCTS_QUERY = gql`
         name
         description
         imageUrl
+        priceSizeP
+        priceSizeM
+        priceSizeG
       }
     }
   }

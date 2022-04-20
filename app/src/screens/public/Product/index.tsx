@@ -1,15 +1,21 @@
-/* eslint-disable react-native/no-inline-styles */
 import { useMutation } from '@apollo/client'
+import { useRoute } from '@react-navigation/native'
 import React from 'react'
 import { Alert, Platform, ScrollView, TouchableOpacity } from 'react-native'
 
+import { ProductNavigationProps } from 'src/@types/navigation'
 import { Button, ButtonBack, Input, InputPrice, Picture } from 'src/components'
 import {
   CustomCreateOneProductMutation,
   CustomCreateOneProductMutationOptions,
   CustomCreateOneProductMutationVariables,
+  CustomUpdateOneProductMutation,
+  CustomUpdateOneProductMutationOptions,
 } from 'src/gql/generated/endpointTypes'
-import { CUSTOM_CREATE_ONE_PRODUCT_MUTATION } from 'src/gql/modules/product/mutations'
+import {
+  CUSTOM_CREATE_ONE_PRODUCT_MUTATION,
+  CUSTOM_UPDATE_ONE_PRODUCT_MUTATION,
+} from 'src/gql/modules/product/mutations'
 import { YupType, useHookForm } from 'src/hooks/useHookForm'
 import { useImagePicker } from 'src/hooks/useImagePicker'
 import { textCounter } from 'src/utils/textCounter'
@@ -31,32 +37,50 @@ const yupSchema = (yup: YupType) =>
 
 export const Product = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
-  const { assets, openCamera, openLibrary, assetsToRNFiles } = useImagePicker()
+
+  const { assets, assetsToRNFiles, openCamera, openLibrary } = useImagePicker()
+
+  const route = useRoute()
+  const { product } = route.params as ProductNavigationProps
+
   const { register, isSubmitting, handleSubmit, watch } =
-    useHookForm<CustomCreateOneProductMutationVariables>({ yupSchema })
+    useHookForm<CustomCreateOneProductMutationVariables>({
+      defaultValues: product,
+      yupSchema,
+    })
 
   const [customCreateOneProduct] = useMutation<CustomCreateOneProductMutation>(
-    CUSTOM_CREATE_ONE_PRODUCT_MUTATION,
-    {
-      onCompleted: () => {
-        console.log('Produto cadastrado')
-      },
-      onError: (err: Error) => {
-        Alert.alert('Cadastro de Produto', `${err.message}`)
-      },
-    }
+    CUSTOM_CREATE_ONE_PRODUCT_MUTATION
+  )
+  const [customUpdateOneProduct] = useMutation<CustomUpdateOneProductMutation>(
+    CUSTOM_UPDATE_ONE_PRODUCT_MUTATION
   )
 
-  const onSubmit = async (data: CustomCreateOneProductMutationOptions) => {
+  const onCreate = async (data: CustomCreateOneProductMutationOptions) => {
     try {
       const imageFile = assetsToRNFiles()[0]
-      customCreateOneProduct({ variables: { ...data, imageFile, a: 'b' } })
+      customCreateOneProduct({ variables: { ...data, imageFile } })
     } catch (err) {
       console.log('error creating product:', err)
     }
   }
 
-  const onPress = handleSubmit<FormData>(onSubmit)
+  const onUpdate = async (data: CustomUpdateOneProductMutationOptions) => {
+    try {
+      // const imageFile = assetsToRNFiles()[0]
+      customUpdateOneProduct({ variables: { ...data } })
+    } catch (err) {
+      console.log('error updating product:', err)
+    }
+  }
+
+  const onPress = handleSubmit(product ? onUpdate : onCreate)
+
+  const pictureUri = assets.length
+    ? assets[0].path
+    : product
+    ? product.imageUrl
+    : null
 
   return (
     <S.Wrapper behavior={behavior}>
@@ -64,7 +88,7 @@ export const Product = () => {
         <S.Header>
           <ButtonBack onPress={() => Alert.alert('Ok')} />
 
-          <S.Title>Cadastrar</S.Title>
+          <S.Title>{product ? 'Editar' : 'Registrar'}</S.Title>
 
           <TouchableOpacity>
             <S.DeleteLabel>Deletar</S.DeleteLabel>
@@ -72,7 +96,7 @@ export const Product = () => {
         </S.Header>
 
         <S.Upload>
-          <Picture uri={assets.length ? assets[0].path : null} />
+          <Picture uri={pictureUri} />
 
           <Button
             onPress={openCamera}
@@ -114,13 +138,13 @@ export const Product = () => {
 
           <S.InputGroup>
             <S.Label>Tamanhos e preços</S.Label>
-            <InputPrice size="P" {...register('priceSizeP')} />
-            <InputPrice size="M" {...register('priceSizeM')} />
-            <InputPrice size="G" {...register('priceSizeG')} />
+            <InputPrice Label="P" {...register('priceSizeP')} />
+            <InputPrice Label="M" {...register('priceSizeM')} />
+            <InputPrice Label="G" {...register('priceSizeG')} />
           </S.InputGroup>
 
           <Button
-            title="Cadastrar pizza"
+            title={product ? 'Salvar alterações na pizza' : 'Cadastrar pizza'}
             onPress={onPress as any}
             loading={isSubmitting}
           />

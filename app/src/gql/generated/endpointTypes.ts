@@ -167,6 +167,7 @@ export type Mutation = {
   createOneUser: User;
   createOneUserToken: UserToken;
   customCreateOneProduct: Product;
+  customUpdateOneProduct: Product;
   deleteManyProducts: DeleteManyResponse;
   deleteManyUserTokens: DeleteManyResponse;
   deleteManyUsers: DeleteManyResponse;
@@ -224,6 +225,11 @@ export type MutationCreateOneUserTokenArgs = {
 
 export type MutationCustomCreateOneProductArgs = {
   input: CustomCreateOneProduct;
+};
+
+
+export type MutationCustomUpdateOneProductArgs = {
+  input: UpdateProduct;
 };
 
 
@@ -690,6 +696,7 @@ export type UpdateOneUserTokenInput = {
 
 export type UpdateProduct = {
   description?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
   imageFile?: InputMaybe<Scalars['UploadScalar']>;
   name?: InputMaybe<Scalars['String']>;
   priceSizeG?: InputMaybe<Scalars['Float']>;
@@ -987,6 +994,28 @@ export type CustomCreateOneProductMutationVariables = Exact<{
 
 export type CustomCreateOneProductMutation = { __typename?: 'Mutation', customCreateOneProduct: { __typename?: 'Product', description: string, id: string, imageUrl?: string | null, name: string, priceSizeP: number, priceSizeM: number, priceSizeG: number } };
 
+export type CustomUpdateOneProductMutationVariables = Exact<{
+  id: Scalars['String'];
+  imageFile?: InputMaybe<Scalars['UploadScalar']>;
+  name?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  priceSizeP?: InputMaybe<Scalars['Float']>;
+  priceSizeM?: InputMaybe<Scalars['Float']>;
+  priceSizeG?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type CustomUpdateOneProductMutation = { __typename?: 'Mutation', customUpdateOneProduct: { __typename?: 'Product', description: string, id: string, imageUrl?: string | null, name: string, priceSizeP: number, priceSizeM: number, priceSizeG: number } };
+
+export type ProductsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  offset: Scalars['Int'];
+  filter?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductConnection', totalCount: number, pageInfo: { __typename?: 'OffsetPageInfo', hasNextPage?: boolean | null, hasPreviousPage?: boolean | null }, nodes: Array<{ __typename?: 'Product', id: string, name: string, description: string, imageUrl?: string | null, priceSizeP: number, priceSizeM: number, priceSizeG: number }> } };
+
 
 export const CreateUserDocument = gql`
     mutation createUser($name: String!, $email: String!, $password: String!) {
@@ -1246,6 +1275,106 @@ export function useCustomCreateOneProductMutation(baseOptions?: Apollo.MutationH
 export type CustomCreateOneProductMutationHookResult = ReturnType<typeof useCustomCreateOneProductMutation>;
 export type CustomCreateOneProductMutationResult = Apollo.MutationResult<CustomCreateOneProductMutation>;
 export type CustomCreateOneProductMutationOptions = Apollo.BaseMutationOptions<CustomCreateOneProductMutation, CustomCreateOneProductMutationVariables>;
+export const CustomUpdateOneProductDocument = gql`
+    mutation CustomUpdateOneProduct($id: String!, $imageFile: UploadScalar, $name: String, $description: String, $priceSizeP: Float, $priceSizeM: Float, $priceSizeG: Float) {
+  customUpdateOneProduct(
+    input: {id: $id, imageFile: $imageFile, name: $name, description: $description, priceSizeP: $priceSizeP, priceSizeM: $priceSizeM, priceSizeG: $priceSizeG}
+  ) {
+    description
+    id
+    imageUrl
+    name
+    priceSizeP
+    priceSizeM
+    priceSizeG
+  }
+}
+    `;
+export type CustomUpdateOneProductMutationFn = Apollo.MutationFunction<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>;
+
+/**
+ * __useCustomUpdateOneProductMutation__
+ *
+ * To run a mutation, you first call `useCustomUpdateOneProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCustomUpdateOneProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [customUpdateOneProductMutation, { data, loading, error }] = useCustomUpdateOneProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      imageFile: // value for 'imageFile'
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *      priceSizeP: // value for 'priceSizeP'
+ *      priceSizeM: // value for 'priceSizeM'
+ *      priceSizeG: // value for 'priceSizeG'
+ *   },
+ * });
+ */
+export function useCustomUpdateOneProductMutation(baseOptions?: Apollo.MutationHookOptions<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>(CustomUpdateOneProductDocument, options);
+      }
+export type CustomUpdateOneProductMutationHookResult = ReturnType<typeof useCustomUpdateOneProductMutation>;
+export type CustomUpdateOneProductMutationResult = Apollo.MutationResult<CustomUpdateOneProductMutation>;
+export type CustomUpdateOneProductMutationOptions = Apollo.BaseMutationOptions<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>;
+export const ProductsDocument = gql`
+    query products($limit: Int!, $offset: Int!, $filter: String) {
+  products(
+    paging: {limit: $limit, offset: $offset}
+    filter: {name: {like: $filter}}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
+    nodes {
+      id
+      name
+      description
+      imageUrl
+      priceSizeP
+      priceSizeM
+      priceSizeG
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductsQuery__
+ *
+ * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useProductsQuery(baseOptions: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+      }
+export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+        }
+export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
+export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
+export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
 
       export interface PossibleTypesResultData {
         possibleTypes: {
@@ -1256,3 +1385,4 @@ export type CustomCreateOneProductMutationOptions = Apollo.BaseMutationOptions<C
   "possibleTypes": {}
 };
       export default result;
+    

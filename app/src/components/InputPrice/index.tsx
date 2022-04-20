@@ -9,11 +9,11 @@ type InputProps = TextInputProps & {
   control: Control<any, any>
   error?: FieldError
   variant?: S.VariantType
-  size: string
+  Label: string
 }
 
 export const InputPrice = ({
-  size,
+  Label,
   name,
   control,
   error,
@@ -29,7 +29,7 @@ export const InputPrice = ({
           render={({ field: { onChange, value, onBlur } }) => (
             <>
               <S.Size>
-                <S.Label>{size}</S.Label>
+                <S.Label>{Label}</S.Label>
               </S.Size>
 
               <S.Label>R$</S.Label>
