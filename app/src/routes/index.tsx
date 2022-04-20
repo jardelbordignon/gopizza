@@ -1,3 +1,4 @@
+import { NavigationContainer } from '@react-navigation/native'
 import React from 'react'
 
 import { useAuth } from 'src/hooks/useAuthentication'
@@ -8,5 +9,9 @@ import { PublicRoutes } from './public'
 export const Routes = () => {
   const { user } = useAuth()
 
-  return user ? <PrivateRoutes /> : <PublicRoutes />
+  return (
+    <NavigationContainer>
+      {user ? <PrivateRoutes /> : <PublicRoutes />}
+    </NavigationContainer>
+  )
 }

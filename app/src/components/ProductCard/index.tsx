@@ -1,5 +1,8 @@
 import React from 'react'
-import { RectButtonProps } from 'react-native-gesture-handler'
+import {
+  GestureHandlerRootView,
+  RectButtonProps,
+} from 'react-native-gesture-handler'
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useTheme } from 'styled-components/native'
 
@@ -25,20 +28,22 @@ export const ProductCard = ({ product, ...rest }: Props) => {
 
   return (
     <S.Wrapper>
-      <S.Content {...rest}>
-        <Picture uri={product.imageUrl} size="104px" />
+      <GestureHandlerRootView>
+        <S.Content {...rest}>
+          <Picture uri={product.imageUrl} size="104px" />
 
-        <S.Details>
-          <Box>
-            <S.Name>{product.name}</S.Name>
-            <Icons name="chevron-right" size={18} color={COLORS.SHAPE} />
-          </Box>
+          <S.Details>
+            <Box>
+              <S.Name>{product.name}</S.Name>
+              <Icons name="chevron-right" size={18} color={COLORS.SHAPE} />
+            </Box>
 
-          <S.Description>{product.description}</S.Description>
-        </S.Details>
-      </S.Content>
+            <S.Description>{product.description}</S.Description>
+          </S.Details>
+        </S.Content>
 
-      <S.Line />
+        <S.Line />
+      </GestureHandlerRootView>
     </S.Wrapper>
   )
 }

@@ -1,4 +1,5 @@
 import { useLazyQuery } from '@apollo/client'
+import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
 import { FlatList, TouchableOpacity } from 'react-native'
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -24,6 +25,8 @@ type QueryResponse = {
 
 export const Home = () => {
   const { COLORS } = useTheme()
+  const { navigate } = useNavigation()
+
   const [products, setProducts] = useState<Product[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [search, setSearch] = useState('')
@@ -71,6 +74,10 @@ export const Home = () => {
     }
   }
 
+  const handleOpen = (product: Product) => {
+    navigate('product', { product })
+  }
+
   const flatListContentStyle = {
     paddingTop: 20,
     paddingHorizontal: 24,
@@ -114,7 +121,9 @@ export const Home = () => {
           <FlatList
             data={products}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => <ProductCard product={item} />}
+            renderItem={({ item }) => (
+              <ProductCard product={item} onPress={() => handleOpen(item)} />
+            )}
             showsVerticalScrollIndicator={false}
             onEndReachedThreshold={0.5}
             onEndReached={onEndReached}
