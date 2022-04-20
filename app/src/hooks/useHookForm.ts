@@ -7,17 +7,20 @@ export type YupType = typeof yup
 type UseHookFormType = {
   yupSchema: (yup: YupType) => yup.ObjectSchema<any>
   mode?: keyof ValidationMode
+  defaultValues?: any
 }
 
 export const useHookForm = <T extends { [key: string]: any }>({
   yupSchema,
   mode = 'onBlur',
+  defaultValues,
 }: UseHookFormType) => {
   const resolver = yupResolver(yupSchema(yup))
 
   const { control, handleSubmit, formState, getValues, watch } = useForm({
     mode,
     resolver,
+    defaultValues,
   })
   const { errors, isSubmitting } = formState
 
