@@ -5,27 +5,30 @@ import ImagePicker, {
   Options,
 } from 'react-native-image-crop-picker'
 
-export const useImagePicker = (
-  options: Options = {
-    compressImageMaxWidth: 400,
-    compressImageMaxHeight: 400,
-    cropping: false,
-    compressImageQuality: 0.5,
-    writeTempFile: true,
-    multiple: true,
-    //includeBase64: true,
-  }
-) => {
+const cameraOptions: Options = {
+  compressImageMaxWidth: 400,
+  compressImageMaxHeight: 400,
+  cropping: false,
+  compressImageQuality: 0.7,
+}
+
+export const useImagePicker = () => {
   const [assets, setAssets] = useState<ImageOrVideo[]>([])
 
-  const handle = (openOption: 'openCamera' | 'openPicker') => {
-    ImagePicker[openOption](options)
-      .then(asset => setAssets([asset, ...assets]))
+  const openCamera = () =>
+    ImagePicker.openCamera(cameraOptions)
+      .then(assetFromCamera => setAssets([assetFromCamera, ...assets]))
       .catch(err => console.log(err.message))
-  }
 
-  const openCamera = () => handle('openCamera')
-  const openLibrary = () => handle('openPicker')
+  const openLibrary = () =>
+    ImagePicker.openPicker({
+      multiple: true,
+      compressImageMaxWidth: 400,
+      compressImageMaxHeight: 400,
+      compressImageQuality: 0.7,
+    })
+      .then(assetsFromLibrary => setAssets([...assetsFromLibrary, ...assets]))
+      .catch(err => console.log(err.message))
 
   const assetsToRNFiles = () =>
     assets.map(
