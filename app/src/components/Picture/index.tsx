@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import * as S from './styles'
 
@@ -9,6 +9,8 @@ interface IPicture {
 
 export const Picture = ({ uri, size }: IPicture) => {
   const [valid, setValid] = useState(true)
+
+  useEffect(() => setValid(true), [uri])
 
   if (typeof uri === 'string' && valid) {
     return (
