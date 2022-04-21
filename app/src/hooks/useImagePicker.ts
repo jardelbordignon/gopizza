@@ -12,12 +12,24 @@ const cameraOptions: Options = {
   compressImageQuality: 0.7,
 }
 
+const randomNum = () => Math.floor(Math.random() * 10000)
+
 export const useImagePicker = () => {
-  const [assets, setAssets] = useState<ImageOrVideo[]>([])
+  const [files, setFiles] = useState<ReactNativeFile[]>([])
+
+  const RNFilesFromMedias = (medias: ImageOrVideo[]) =>
+    medias.map(
+      media =>
+        new ReactNativeFile({
+          name: `${randomNum()}.${media.path.split('.').pop()}`, // 9999.jpg
+          type: media.mime,
+          uri: media.path,
+        })
+    )
 
   const openCamera = () =>
     ImagePicker.openCamera(cameraOptions)
-      .then(assetFromCamera => setAssets([assetFromCamera, ...assets]))
+      .then(media => setFiles([...RNFilesFromMedias([media]), ...files]))
       .catch(err => console.log(err.message))
 
   const openLibrary = () =>
@@ -27,18 +39,8 @@ export const useImagePicker = () => {
       compressImageMaxHeight: 400,
       compressImageQuality: 0.7,
     })
-      .then(assetsFromLibrary => setAssets([...assetsFromLibrary, ...assets]))
+      .then(medias => setFiles([...RNFilesFromMedias(medias), ...files]))
       .catch(err => console.log(err.message))
 
-  const assetsToRNFiles = () =>
-    assets.map(
-      asset =>
-        new ReactNativeFile({
-          name: `.${asset.path.split('.').pop()}`,
-          type: asset.mime,
-          uri: asset.path,
-        })
-    )
-
-  return { assets, assetsToRNFiles, openCamera, openLibrary }
+  return { files, openCamera, openLibrary }
 }

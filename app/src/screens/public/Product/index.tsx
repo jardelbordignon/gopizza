@@ -38,10 +38,11 @@ const yupSchema = (yup: YupType) =>
 export const Product = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
 
-  const { assets, assetsToRNFiles, openCamera, openLibrary } = useImagePicker()
+  const { files, openCamera, openLibrary } = useImagePicker()
 
   const route = useRoute()
-  const { product } = route.params as ProductNavigationProps
+  const params = route.params as ProductNavigationProps
+  const product = params ? params.product : null
 
   const { register, isSubmitting, handleSubmit, watch } =
     useHookForm<CustomCreateOneProductMutationVariables>({
@@ -58,8 +59,7 @@ export const Product = () => {
 
   const onCreate = async (data: CustomCreateOneProductMutationOptions) => {
     try {
-      const imageFile = assetsToRNFiles()[0]
-      customCreateOneProduct({ variables: { ...data, imageFile } })
+      customCreateOneProduct({ variables: { ...data, imageFile: files[0] } })
     } catch (err) {
       console.log('error creating product:', err)
     }
@@ -76,8 +76,8 @@ export const Product = () => {
 
   const onPress = handleSubmit(product ? onUpdate : onCreate)
 
-  const pictureUri = assets.length
-    ? assets[0].path
+  const pictureUri = files.length
+    ? files[0].uri
     : product
     ? product.imageUrl
     : null
