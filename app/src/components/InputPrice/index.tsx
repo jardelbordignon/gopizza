@@ -35,7 +35,7 @@ export const InputPrice = ({
               <S.Label>R$</S.Label>
               <S.Input
                 keyboardType="numeric"
-                value={value.toString()}
+                value={value ? value.toString() : ''}
                 onBlur={onBlur}
                 onChangeText={text => onChange(text)}
                 {...rest}
