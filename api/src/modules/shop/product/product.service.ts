@@ -1,6 +1,6 @@
 import { QueryService } from '@nestjs-query/core'
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm'
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
@@ -23,11 +23,10 @@ export class ProductService extends TypeOrmQueryService<Product> {
   async customCreateOneProduct(
     input: CustomCreateOneProductDTO
   ): Promise<ProductDTO> {
-    const imageUrl = await storageProvider.store(input.imageFile, 'products')
+    const product = this.repo.create(input)
 
-    const productData = { ...input, imageUrl }
-
-    const product = this.repo.create(productData)
+    const folder = `products/${product.id}`
+    product.imageDirs = await storageProvider.store(input.imageFiles, folder)
 
     return this.repo.save(product)
   }
@@ -35,15 +34,33 @@ export class ProductService extends TypeOrmQueryService<Product> {
   async customUpdateOneProduct(
     input: CustomUpdateOneProductDTO
   ): Promise<ProductDTO> {
-    const product = await this.repo.findOne(input.id)
+    const currentProduct = await this.repo.findOne(input.id)
 
-    const mergedProduct = Object.assign(product, input)
+    if (!currentProduct) throw new NotFoundException('Product not found')
 
-    if (input.imageFile) {
-      const imageUrl = await storageProvider.store(input.imageFile, 'products')
-      mergedProduct.imageUrl = imageUrl
+    const product = Object.assign(currentProduct, input)
+
+    if (input.imageFiles || input.currentImageDirs) {
+      if (input.currentImageDirs) {
+        const deletedImageDirs = product.imageDirs.filter(
+          (imageDir) => !input.currentImageDirs.includes(imageDir)
+        )
+
+        deletedImageDirs.forEach((imageDir) => {
+          storageProvider.destroy(imageDir.split('/medias/')[1])
+        })
+
+        product.imageDirs = input.currentImageDirs
+      }
+
+      if (input.imageFiles) {
+        const folder = `products/${product.id}`
+        const imageDirs = await storageProvider.store(input.imageFiles, folder)
+
+        product.imageDirs = [...product.imageDirs, ...imageDirs]
+      }
     }
 
-    return this.repo.save(mergedProduct)
+    return this.repo.save(product)
   }
 }

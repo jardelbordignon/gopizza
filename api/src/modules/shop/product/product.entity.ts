@@ -4,21 +4,21 @@ import { SoftEntity } from 'src/base/shared/entities/soft.entity'
 
 @Entity({ name: 'products' })
 export class Product extends SoftEntity {
+  @Column({ nullable: true })
+  description: string
+
+  @Column('simple-array', { nullable: true })
+  imageDirs: string[]
+
   @Column()
   name: string
 
   @Column({ nullable: true })
-  description: string
-
-  @Column({ nullable: true })
-  priceSizeP: number
+  priceSizeL: number
 
   @Column({ nullable: true })
   priceSizeM: number
 
   @Column({ nullable: true })
-  priceSizeG: number
-
-  @Column({ nullable: true })
-  imageUrl: string
+  priceSizeS: number
 }
