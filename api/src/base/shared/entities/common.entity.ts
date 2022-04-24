@@ -4,7 +4,7 @@ import { BasicEntity } from './basic.entity'
 
 export class CommonEntity extends BasicEntity {
   @CreateDateColumn()
-  createdAt!: Date
+  createdAt?: Date
 
   @UpdateDateColumn()
   updatedAt?: Date

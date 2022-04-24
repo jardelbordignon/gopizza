@@ -6,7 +6,7 @@ import { BasicDTO } from './basic.dto'
 @ObjectType()
 export class CommonDTO extends BasicDTO {
   @FilterableField(() => GraphQLISODateTime)
-  createdAt!: Date
+  createdAt?: Date
 
   @FilterableField(() => GraphQLISODateTime)
   updatedAt?: Date
