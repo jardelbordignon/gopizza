@@ -4,9 +4,9 @@ import { resolve } from 'path'
 
 import { v4 as uuid } from 'uuid'
 
-import { deleteFile } from './deleteFile'
+import { deleteFile } from './deleteHelper'
 
-export const uploadsFolder = resolve(
+export const mediasFolder = resolve(
   __dirname,
   '..',
   '..',
@@ -14,7 +14,7 @@ export const uploadsFolder = resolve(
   '..',
   '..',
   '..',
-  'uploads'
+  'medias'
 )
 
 /**
@@ -25,17 +25,17 @@ export const uploadsFolder = resolve(
 export const handleUpload = async (file) => {
   const { createReadStream, filename } = await file
   const stream = createReadStream()
-  const storedFileName = `${uuid()}${filename}`
+  const tmpFileName = `${uuid()}${filename}`
 
-  const tmpFolder = resolve(uploadsFolder, 'tmp')
-  if (!existsSync(tmpFolder)) mkdirSync(tmpFolder)
+  const tmpFolder = resolve(mediasFolder, 'tmp')
+  if (!existsSync(tmpFolder)) mkdirSync(tmpFolder, { recursive: true })
 
-  const storedFilePath = `${tmpFolder}/${storedFileName}`
+  const tmpFilePath = `${tmpFolder}/${tmpFileName}`
 
   // Store the file in the filesystem.
   await new Promise((resolve, reject) => {
     // Create a stream to which the upload will be written.
-    const writeStream = createWriteStream(storedFilePath)
+    const writeStream = createWriteStream(tmpFilePath)
 
     // When the upload is fully written, resolve the promise.
     writeStream.on('finish', resolve)
@@ -43,7 +43,7 @@ export const handleUpload = async (file) => {
     // If there's an error writing the file, remove the partially written file
     // and reject the promise.
     writeStream.on('error', (error) => {
-      deleteFile(storedFilePath).then(() => reject(error))
+      deleteFile(tmpFilePath).then(() => reject(error))
     })
 
     // In Node.js <= v13, errors are not automatically propagated between piped
@@ -55,5 +55,5 @@ export const handleUpload = async (file) => {
     stream.pipe(writeStream)
   })
 
-  return storedFileName
+  return tmpFilePath
 }

@@ -1,32 +1,51 @@
-import { existsSync, mkdirSync, promises } from 'fs'
+import { mkdirSync } from 'fs'
 import { resolve } from 'path'
 
+import * as sharp from 'sharp'
+import { v4 as uuid } from 'uuid'
+
 import { IStorageProvider } from '../IStorageProvider'
-import { UploadScalar, deleteFile, handleUpload, uploadsFolder } from '../utils'
+import {
+  UploadScalar,
+  deleteFile,
+  deleteFolder,
+  handleUpload,
+  mediasFolder,
+} from '../utils'
 
+import { env } from 'src/base/config/environment'
 export class LocalStorageProvider implements IStorageProvider {
-  async store(
-    file: UploadScalar,
-    folder: string,
-    fileName?: string
-  ): Promise<string> {
-    const filename = await handleUpload(file)
+  async store(files: UploadScalar[], folder: string): Promise<string[]> {
+    const thisFolder = resolve(mediasFolder, folder)
 
-    const name = fileName || filename
+    const tmpFilePathsPromise = files.map((file) => handleUpload(file))
 
-    const thisFolder = resolve(uploadsFolder, folder)
-    if (!existsSync(thisFolder)) mkdirSync(thisFolder)
+    return Promise.all(tmpFilePathsPromise).then((tmpFilePaths) =>
+      tmpFilePaths.map((tmpFilePath) => {
+        const subFolder = uuid().split('-')[1]
+        const thisSubFolder = resolve(thisFolder, subFolder)
+        mkdirSync(thisSubFolder, { recursive: true })
 
-    promises.rename(
-      resolve(uploadsFolder, 'tmp', filename),
-      resolve(thisFolder, name)
+        Promise.all(
+          [
+            { width: 750, height: 750, name: 'l' },
+            { width: 400, height: 400, name: 'm' },
+            { width: 150, height: 150, name: 's' },
+          ].map(({ width, height, name }) =>
+            sharp(tmpFilePath)
+              .resize(width, height)
+              .toFile(`${thisSubFolder}/${name}.jpg`)
+          )
+        )
+          .then(() => deleteFile(tmpFilePath))
+          .catch((err) => console.log(err))
+
+        return `${env.apiUrl}/medias/${folder}/${subFolder}/`
+      })
     )
-
-    return `${folder}/${name}`
   }
 
-  async destroy(folder: string, fileName: string): Promise<void> {
-    const filePath = resolve(uploadsFolder, folder, fileName)
-    await deleteFile(filePath)
+  async destroy(path: string): Promise<void> {
+    await deleteFolder(resolve(mediasFolder, path))
   }
 }

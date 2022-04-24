@@ -10,3 +10,8 @@ export const cloudinaryCredentials = () => ({
 
 export const provider: StorageProviderType =
   process.env.STORAGE_PROVIDER || isProd ? 'cloudinary' : 'local'
+
+export const mediasFolderUrl = 'http://192.168.0.108:4000/medias/'
+//  provider === 'cloudinary' ? null : `${process.env.DEV_API_URL}/uploads/`
+// provider === 's3'
+//   ? `https://${process.env.STORAGE_BUCKET}.s3.amazonaws.com/`
