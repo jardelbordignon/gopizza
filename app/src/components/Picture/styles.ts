@@ -1,24 +1,25 @@
 import styled, { css } from 'styled-components/native'
 
-type PictureProps = {
+export type PictureStyleProps = {
   size?: string
+  format?: 'square' | 'rounded'
 }
 
-export const Image = styled.Image<PictureProps>`
-  ${({ size }) => css`
-    width: ${size || '160px'};
-    height: ${size || '160px'};
-    border-radius: ${size || '160px'};
+export const Image = styled.Image<PictureStyleProps>`
+  ${({ size, format }) => css`
+    width: ${size || '100px'};
+    height: ${size || '100px'};
+    border-radius: ${format === 'rounded' ? size || '100px' : '10px'};
   `}
 `
-export const PlaceholderWrapper = styled.View<PictureProps>`
+export const PlaceholderWrapper = styled.View<PictureStyleProps>`
   justify-content: center;
   align-items: center;
 
-  ${({ theme, size }) => css`
-    width: ${size || '160px'};
-    height: ${size || '160px'};
-    border-radius: ${size || '160px'};
+  ${({ theme, size, format }) => css`
+    width: ${size || '100px'};
+    height: ${size || '100px'};
+    border-radius: ${format === 'rounded' ? size || '100px' : '10px'};
     border: 1px dashed ${theme.COLORS.ALERT_900};
   `}
 `
