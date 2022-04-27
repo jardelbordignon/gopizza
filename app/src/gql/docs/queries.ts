@@ -1,6 +1,17 @@
 import { gql } from '@apollo/client'
 
-export const PRODUCTS_QUERY = gql`
+gql`
+  query findUsers {
+    users {
+      totalCount
+      nodes {
+        id
+        name
+        email
+      }
+    }
+  }
+
   query products($limit: Int!, $offset: Int!, $filter: String) {
     products(
       paging: { limit: $limit, offset: $offset }
@@ -15,10 +26,10 @@ export const PRODUCTS_QUERY = gql`
         id
         name
         description
-        imageUrl
-        priceSizeP
+        imageDirs
+        priceSizeL
         priceSizeM
-        priceSizeG
+        priceSizeS
       }
     }
   }

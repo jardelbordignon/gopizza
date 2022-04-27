@@ -21,7 +21,7 @@ export type Scalars = {
 
 export type CreateManyProductsInput = {
   /** Array of records to create */
-  products: Array<CustomCreateOneProduct>;
+  products: Array<CreateProduct>;
 };
 
 export type CreateManyUserTokensInput = {
@@ -36,7 +36,7 @@ export type CreateManyUsersInput = {
 
 export type CreateOneProductInput = {
   /** The record to create */
-  product: CustomCreateOneProduct;
+  product: CreateProduct;
 };
 
 export type CreateOneUserInput = {
@@ -49,6 +49,15 @@ export type CreateOneUserTokenInput = {
   userToken: CreateUserToken;
 };
 
+export type CreateProduct = {
+  description: Scalars['String'];
+  imageFiles: Array<Scalars['UploadScalar']>;
+  name: Scalars['String'];
+  priceSizeL: Scalars['Float'];
+  priceSizeM: Scalars['Float'];
+  priceSizeS: Scalars['Float'];
+};
+
 export type CreateUser = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -59,15 +68,6 @@ export type CreateUserToken = {
   expiresAt: Scalars['DateTime'];
   refreshToken: Scalars['String'];
   userId: Scalars['String'];
-};
-
-export type CustomCreateOneProduct = {
-  description: Scalars['String'];
-  imageFile: Scalars['UploadScalar'];
-  name: Scalars['String'];
-  priceSizeG: Scalars['Float'];
-  priceSizeM: Scalars['Float'];
-  priceSizeP: Scalars['Float'];
 };
 
 export type DateFieldComparison = {
@@ -166,8 +166,7 @@ export type Mutation = {
   createOneProduct: Product;
   createOneUser: User;
   createOneUserToken: UserToken;
-  customCreateOneProduct: Product;
-  customUpdateOneProduct: Product;
+  createProduct: Product;
   deleteManyProducts: DeleteManyResponse;
   deleteManyUserTokens: DeleteManyResponse;
   deleteManyUsers: DeleteManyResponse;
@@ -190,6 +189,7 @@ export type Mutation = {
   updateOneProduct: Product;
   updateOneUser: User;
   updateOneUserToken: UserToken;
+  updateProduct: Product;
 };
 
 
@@ -223,13 +223,8 @@ export type MutationCreateOneUserTokenArgs = {
 };
 
 
-export type MutationCustomCreateOneProductArgs = {
-  input: CustomCreateOneProduct;
-};
-
-
-export type MutationCustomUpdateOneProductArgs = {
-  input: UpdateProduct;
+export type MutationCreateProductArgs = {
+  input: CreateProduct;
 };
 
 
@@ -342,6 +337,11 @@ export type MutationUpdateOneUserTokenArgs = {
   input: UpdateOneUserTokenInput;
 };
 
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProduct;
+};
+
 export type NumberFieldComparison = {
   between?: InputMaybe<NumberFieldComparisonBetween>;
   eq?: InputMaybe<Scalars['Float']>;
@@ -379,15 +379,15 @@ export type OffsetPaging = {
 
 export type Product = {
   __typename?: 'Product';
-  createdAt: Scalars['DateTime'];
+  createdAt?: Maybe<Scalars['DateTime']>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   description: Scalars['String'];
   id: Scalars['ID'];
-  imageUrl?: Maybe<Scalars['String']>;
+  imageDirs?: Maybe<Array<Scalars['String']>>;
   name: Scalars['String'];
-  priceSizeG: Scalars['Float'];
+  priceSizeL: Scalars['Float'];
   priceSizeM: Scalars['Float'];
-  priceSizeP: Scalars['Float'];
+  priceSizeS: Scalars['Float'];
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -398,17 +398,17 @@ export type ProductAggregateGroupBy = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
-  priceSizeG?: Maybe<Scalars['Float']>;
+  priceSizeL?: Maybe<Scalars['Float']>;
   priceSizeM?: Maybe<Scalars['Float']>;
-  priceSizeP?: Maybe<Scalars['Float']>;
+  priceSizeS?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type ProductAvgAggregate = {
   __typename?: 'ProductAvgAggregate';
-  priceSizeG?: Maybe<Scalars['Float']>;
+  priceSizeL?: Maybe<Scalars['Float']>;
   priceSizeM?: Maybe<Scalars['Float']>;
-  priceSizeP?: Maybe<Scalars['Float']>;
+  priceSizeS?: Maybe<Scalars['Float']>;
 };
 
 export type ProductConnection = {
@@ -428,9 +428,9 @@ export type ProductCountAggregate = {
   description?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['Int']>;
-  priceSizeG?: Maybe<Scalars['Int']>;
+  priceSizeL?: Maybe<Scalars['Int']>;
   priceSizeM?: Maybe<Scalars['Int']>;
-  priceSizeP?: Maybe<Scalars['Int']>;
+  priceSizeS?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['Int']>;
 };
 
@@ -442,9 +442,9 @@ export type ProductDeleteFilter = {
   id?: InputMaybe<IdFilterComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<ProductDeleteFilter>>;
-  priceSizeG?: InputMaybe<NumberFieldComparison>;
+  priceSizeL?: InputMaybe<NumberFieldComparison>;
   priceSizeM?: InputMaybe<NumberFieldComparison>;
-  priceSizeP?: InputMaybe<NumberFieldComparison>;
+  priceSizeS?: InputMaybe<NumberFieldComparison>;
   updatedAt?: InputMaybe<DateFieldComparison>;
 };
 
@@ -454,11 +454,11 @@ export type ProductDeleteResponse = {
   deletedAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
-  imageUrl?: Maybe<Scalars['String']>;
+  imageDirs?: Maybe<Array<Scalars['String']>>;
   name?: Maybe<Scalars['String']>;
-  priceSizeG?: Maybe<Scalars['Float']>;
+  priceSizeL?: Maybe<Scalars['Float']>;
   priceSizeM?: Maybe<Scalars['Float']>;
-  priceSizeP?: Maybe<Scalars['Float']>;
+  priceSizeS?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -470,9 +470,9 @@ export type ProductFilter = {
   id?: InputMaybe<IdFilterComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<ProductFilter>>;
-  priceSizeG?: InputMaybe<NumberFieldComparison>;
+  priceSizeL?: InputMaybe<NumberFieldComparison>;
   priceSizeM?: InputMaybe<NumberFieldComparison>;
-  priceSizeP?: InputMaybe<NumberFieldComparison>;
+  priceSizeS?: InputMaybe<NumberFieldComparison>;
   updatedAt?: InputMaybe<DateFieldComparison>;
 };
 
@@ -483,9 +483,9 @@ export type ProductMaxAggregate = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
-  priceSizeG?: Maybe<Scalars['Float']>;
+  priceSizeL?: Maybe<Scalars['Float']>;
   priceSizeM?: Maybe<Scalars['Float']>;
-  priceSizeP?: Maybe<Scalars['Float']>;
+  priceSizeS?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -496,9 +496,9 @@ export type ProductMinAggregate = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
-  priceSizeG?: Maybe<Scalars['Float']>;
+  priceSizeL?: Maybe<Scalars['Float']>;
   priceSizeM?: Maybe<Scalars['Float']>;
-  priceSizeP?: Maybe<Scalars['Float']>;
+  priceSizeS?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -514,17 +514,17 @@ export enum ProductSortFields {
   Description = 'description',
   Id = 'id',
   Name = 'name',
-  PriceSizeG = 'priceSizeG',
+  PriceSizeL = 'priceSizeL',
   PriceSizeM = 'priceSizeM',
-  PriceSizeP = 'priceSizeP',
+  PriceSizeS = 'priceSizeS',
   UpdatedAt = 'updatedAt'
 }
 
 export type ProductSumAggregate = {
   __typename?: 'ProductSumAggregate';
-  priceSizeG?: Maybe<Scalars['Float']>;
+  priceSizeL?: Maybe<Scalars['Float']>;
   priceSizeM?: Maybe<Scalars['Float']>;
-  priceSizeP?: Maybe<Scalars['Float']>;
+  priceSizeS?: Maybe<Scalars['Float']>;
 };
 
 export type ProductUpdateFilter = {
@@ -535,9 +535,9 @@ export type ProductUpdateFilter = {
   id?: InputMaybe<IdFilterComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<ProductUpdateFilter>>;
-  priceSizeG?: InputMaybe<NumberFieldComparison>;
+  priceSizeL?: InputMaybe<NumberFieldComparison>;
   priceSizeM?: InputMaybe<NumberFieldComparison>;
-  priceSizeP?: InputMaybe<NumberFieldComparison>;
+  priceSizeS?: InputMaybe<NumberFieldComparison>;
   updatedAt?: InputMaybe<DateFieldComparison>;
 };
 
@@ -695,13 +695,14 @@ export type UpdateOneUserTokenInput = {
 };
 
 export type UpdateProduct = {
+  currentImageDirs?: InputMaybe<Array<Scalars['String']>>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
-  imageFile?: InputMaybe<Scalars['UploadScalar']>;
+  imageFiles?: InputMaybe<Array<Scalars['UploadScalar']>>;
   name?: InputMaybe<Scalars['String']>;
-  priceSizeG?: InputMaybe<Scalars['Float']>;
+  priceSizeL?: InputMaybe<Scalars['Float']>;
   priceSizeM?: InputMaybe<Scalars['Float']>;
-  priceSizeP?: InputMaybe<Scalars['Float']>;
+  priceSizeS?: InputMaybe<Scalars['Float']>;
 };
 
 export type UpdateUser = {
@@ -719,7 +720,7 @@ export type UpdateUserToken = {
 
 export type User = {
   __typename?: 'User';
-  createdAt: Scalars['DateTime'];
+  createdAt?: Maybe<Scalars['DateTime']>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
   id: Scalars['ID'];
@@ -962,13 +963,6 @@ export type LogoutMutationVariables = Exact<{
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
-export type SendPasswordResetEmailMutationVariables = Exact<{
-  email: Scalars['String'];
-}>;
-
-
-export type SendPasswordResetEmailMutation = { __typename?: 'Mutation', sendPasswordResetEmail: boolean };
-
 export type ResetPasswordMutationVariables = Exact<{
   refreshToken: Scalars['String'];
   password: Scalars['String'];
@@ -977,35 +971,43 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
+export type SendPasswordResetEmailMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type SendPasswordResetEmailMutation = { __typename?: 'Mutation', sendPasswordResetEmail: boolean };
+
+export type CreateProductMutationVariables = Exact<{
+  description: Scalars['String'];
+  imageFiles: Array<Scalars['UploadScalar']> | Scalars['UploadScalar'];
+  name: Scalars['String'];
+  priceSizeL: Scalars['Float'];
+  priceSizeM: Scalars['Float'];
+  priceSizeS: Scalars['Float'];
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: string, name: string, imageDirs?: Array<string> | null, priceSizeL: number, priceSizeM: number, priceSizeS: number } };
+
+export type UpdateProductMutationVariables = Exact<{
+  id: Scalars['String'];
+  imageFiles?: InputMaybe<Array<Scalars['UploadScalar']> | Scalars['UploadScalar']>;
+  currentImageDirs?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  priceSizeL?: InputMaybe<Scalars['Float']>;
+  priceSizeM?: InputMaybe<Scalars['Float']>;
+  priceSizeS?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', description: string, id: string, imageDirs?: Array<string> | null, name: string, priceSizeL: number, priceSizeM: number, priceSizeS: number } };
+
 export type FindUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type FindUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', totalCount: number, nodes: Array<{ __typename?: 'User', id: string, name: string, email: string }> } };
-
-export type CustomCreateOneProductMutationVariables = Exact<{
-  name: Scalars['String'];
-  description: Scalars['String'];
-  imageFile: Scalars['UploadScalar'];
-  priceSizeP: Scalars['Float'];
-  priceSizeM: Scalars['Float'];
-  priceSizeG: Scalars['Float'];
-}>;
-
-
-export type CustomCreateOneProductMutation = { __typename?: 'Mutation', customCreateOneProduct: { __typename?: 'Product', description: string, id: string, imageUrl?: string | null, name: string, priceSizeP: number, priceSizeM: number, priceSizeG: number } };
-
-export type CustomUpdateOneProductMutationVariables = Exact<{
-  id: Scalars['String'];
-  imageFile?: InputMaybe<Scalars['UploadScalar']>;
-  name?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
-  priceSizeP?: InputMaybe<Scalars['Float']>;
-  priceSizeM?: InputMaybe<Scalars['Float']>;
-  priceSizeG?: InputMaybe<Scalars['Float']>;
-}>;
-
-
-export type CustomUpdateOneProductMutation = { __typename?: 'Mutation', customUpdateOneProduct: { __typename?: 'Product', description: string, id: string, imageUrl?: string | null, name: string, priceSizeP: number, priceSizeM: number, priceSizeG: number } };
 
 export type ProductsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -1014,7 +1016,7 @@ export type ProductsQueryVariables = Exact<{
 }>;
 
 
-export type ProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductConnection', totalCount: number, pageInfo: { __typename?: 'OffsetPageInfo', hasNextPage?: boolean | null, hasPreviousPage?: boolean | null }, nodes: Array<{ __typename?: 'Product', id: string, name: string, description: string, imageUrl?: string | null, priceSizeP: number, priceSizeM: number, priceSizeG: number }> } };
+export type ProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductConnection', totalCount: number, pageInfo: { __typename?: 'OffsetPageInfo', hasNextPage?: boolean | null, hasPreviousPage?: boolean | null }, nodes: Array<{ __typename?: 'Product', id: string, name: string, description: string, imageDirs?: Array<string> | null, priceSizeL: number, priceSizeM: number, priceSizeS: number }> } };
 
 
 export const CreateUserDocument = gql`
@@ -1127,37 +1129,6 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
-export const SendPasswordResetEmailDocument = gql`
-    mutation sendPasswordResetEmail($email: String!) {
-  sendPasswordResetEmail(input: {email: $email})
-}
-    `;
-export type SendPasswordResetEmailMutationFn = Apollo.MutationFunction<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>;
-
-/**
- * __useSendPasswordResetEmailMutation__
- *
- * To run a mutation, you first call `useSendPasswordResetEmailMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendPasswordResetEmailMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [sendPasswordResetEmailMutation, { data, loading, error }] = useSendPasswordResetEmailMutation({
- *   variables: {
- *      email: // value for 'email'
- *   },
- * });
- */
-export function useSendPasswordResetEmailMutation(baseOptions?: Apollo.MutationHookOptions<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>(SendPasswordResetEmailDocument, options);
-      }
-export type SendPasswordResetEmailMutationHookResult = ReturnType<typeof useSendPasswordResetEmailMutation>;
-export type SendPasswordResetEmailMutationResult = Apollo.MutationResult<SendPasswordResetEmailMutation>;
-export type SendPasswordResetEmailMutationOptions = Apollo.BaseMutationOptions<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation resetPassword($refreshToken: String!, $password: String!) {
   resetPassword(input: {refreshToken: $refreshToken, password: $password})
@@ -1190,6 +1161,130 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const SendPasswordResetEmailDocument = gql`
+    mutation sendPasswordResetEmail($email: String!) {
+  sendPasswordResetEmail(input: {email: $email})
+}
+    `;
+export type SendPasswordResetEmailMutationFn = Apollo.MutationFunction<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>;
+
+/**
+ * __useSendPasswordResetEmailMutation__
+ *
+ * To run a mutation, you first call `useSendPasswordResetEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendPasswordResetEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendPasswordResetEmailMutation, { data, loading, error }] = useSendPasswordResetEmailMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useSendPasswordResetEmailMutation(baseOptions?: Apollo.MutationHookOptions<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>(SendPasswordResetEmailDocument, options);
+      }
+export type SendPasswordResetEmailMutationHookResult = ReturnType<typeof useSendPasswordResetEmailMutation>;
+export type SendPasswordResetEmailMutationResult = Apollo.MutationResult<SendPasswordResetEmailMutation>;
+export type SendPasswordResetEmailMutationOptions = Apollo.BaseMutationOptions<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($description: String!, $imageFiles: [UploadScalar!]!, $name: String!, $priceSizeL: Float!, $priceSizeM: Float!, $priceSizeS: Float!) {
+  createProduct(
+    input: {imageFiles: $imageFiles, name: $name, description: $description, priceSizeL: $priceSizeL, priceSizeM: $priceSizeM, priceSizeS: $priceSizeS}
+  ) {
+    id
+    name
+    imageDirs
+    priceSizeL
+    priceSizeM
+    priceSizeS
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      description: // value for 'description'
+ *      imageFiles: // value for 'imageFiles'
+ *      name: // value for 'name'
+ *      priceSizeL: // value for 'priceSizeL'
+ *      priceSizeM: // value for 'priceSizeM'
+ *      priceSizeS: // value for 'priceSizeS'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const UpdateProductDocument = gql`
+    mutation UpdateProduct($id: String!, $imageFiles: [UploadScalar!], $currentImageDirs: [String!], $name: String, $description: String, $priceSizeL: Float, $priceSizeM: Float, $priceSizeS: Float) {
+  updateProduct(
+    input: {id: $id, imageFiles: $imageFiles, currentImageDirs: $currentImageDirs, name: $name, description: $description, priceSizeL: $priceSizeL, priceSizeM: $priceSizeM, priceSizeS: $priceSizeS}
+  ) {
+    description
+    id
+    imageDirs
+    name
+    priceSizeL
+    priceSizeM
+    priceSizeS
+  }
+}
+    `;
+export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      imageFiles: // value for 'imageFiles'
+ *      currentImageDirs: // value for 'currentImageDirs'
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *      priceSizeL: // value for 'priceSizeL'
+ *      priceSizeM: // value for 'priceSizeM'
+ *      priceSizeS: // value for 'priceSizeS'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
 export const FindUsersDocument = gql`
     query findUsers {
   users {
@@ -1229,99 +1324,6 @@ export function useFindUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type FindUsersQueryHookResult = ReturnType<typeof useFindUsersQuery>;
 export type FindUsersLazyQueryHookResult = ReturnType<typeof useFindUsersLazyQuery>;
 export type FindUsersQueryResult = Apollo.QueryResult<FindUsersQuery, FindUsersQueryVariables>;
-export const CustomCreateOneProductDocument = gql`
-    mutation CustomCreateOneProduct($name: String!, $description: String!, $imageFile: UploadScalar!, $priceSizeP: Float!, $priceSizeM: Float!, $priceSizeG: Float!) {
-  customCreateOneProduct(
-    input: {name: $name, description: $description, imageFile: $imageFile, priceSizeP: $priceSizeP, priceSizeM: $priceSizeM, priceSizeG: $priceSizeG}
-  ) {
-    description
-    id
-    imageUrl
-    name
-    priceSizeP
-    priceSizeM
-    priceSizeG
-  }
-}
-    `;
-export type CustomCreateOneProductMutationFn = Apollo.MutationFunction<CustomCreateOneProductMutation, CustomCreateOneProductMutationVariables>;
-
-/**
- * __useCustomCreateOneProductMutation__
- *
- * To run a mutation, you first call `useCustomCreateOneProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCustomCreateOneProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [customCreateOneProductMutation, { data, loading, error }] = useCustomCreateOneProductMutation({
- *   variables: {
- *      name: // value for 'name'
- *      description: // value for 'description'
- *      imageFile: // value for 'imageFile'
- *      priceSizeP: // value for 'priceSizeP'
- *      priceSizeM: // value for 'priceSizeM'
- *      priceSizeG: // value for 'priceSizeG'
- *   },
- * });
- */
-export function useCustomCreateOneProductMutation(baseOptions?: Apollo.MutationHookOptions<CustomCreateOneProductMutation, CustomCreateOneProductMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CustomCreateOneProductMutation, CustomCreateOneProductMutationVariables>(CustomCreateOneProductDocument, options);
-      }
-export type CustomCreateOneProductMutationHookResult = ReturnType<typeof useCustomCreateOneProductMutation>;
-export type CustomCreateOneProductMutationResult = Apollo.MutationResult<CustomCreateOneProductMutation>;
-export type CustomCreateOneProductMutationOptions = Apollo.BaseMutationOptions<CustomCreateOneProductMutation, CustomCreateOneProductMutationVariables>;
-export const CustomUpdateOneProductDocument = gql`
-    mutation CustomUpdateOneProduct($id: String!, $imageFile: UploadScalar, $name: String, $description: String, $priceSizeP: Float, $priceSizeM: Float, $priceSizeG: Float) {
-  customUpdateOneProduct(
-    input: {id: $id, imageFile: $imageFile, name: $name, description: $description, priceSizeP: $priceSizeP, priceSizeM: $priceSizeM, priceSizeG: $priceSizeG}
-  ) {
-    description
-    id
-    imageUrl
-    name
-    priceSizeP
-    priceSizeM
-    priceSizeG
-  }
-}
-    `;
-export type CustomUpdateOneProductMutationFn = Apollo.MutationFunction<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>;
-
-/**
- * __useCustomUpdateOneProductMutation__
- *
- * To run a mutation, you first call `useCustomUpdateOneProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCustomUpdateOneProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [customUpdateOneProductMutation, { data, loading, error }] = useCustomUpdateOneProductMutation({
- *   variables: {
- *      id: // value for 'id'
- *      imageFile: // value for 'imageFile'
- *      name: // value for 'name'
- *      description: // value for 'description'
- *      priceSizeP: // value for 'priceSizeP'
- *      priceSizeM: // value for 'priceSizeM'
- *      priceSizeG: // value for 'priceSizeG'
- *   },
- * });
- */
-export function useCustomUpdateOneProductMutation(baseOptions?: Apollo.MutationHookOptions<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>(CustomUpdateOneProductDocument, options);
-      }
-export type CustomUpdateOneProductMutationHookResult = ReturnType<typeof useCustomUpdateOneProductMutation>;
-export type CustomUpdateOneProductMutationResult = Apollo.MutationResult<CustomUpdateOneProductMutation>;
-export type CustomUpdateOneProductMutationOptions = Apollo.BaseMutationOptions<CustomUpdateOneProductMutation, CustomUpdateOneProductMutationVariables>;
 export const ProductsDocument = gql`
     query products($limit: Int!, $offset: Int!, $filter: String) {
   products(
@@ -1337,10 +1339,10 @@ export const ProductsDocument = gql`
       id
       name
       description
-      imageUrl
-      priceSizeP
+      imageDirs
+      priceSizeL
       priceSizeM
-      priceSizeG
+      priceSizeS
     }
   }
 }

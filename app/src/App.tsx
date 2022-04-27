@@ -11,7 +11,7 @@ import { ThemeProvider } from 'styled-components/native'
 
 import { Progress } from 'src/components'
 import { createClient } from 'src/gql/client'
-import { LoginMutation } from 'src/gql/generated/endpointTypes'
+import { LoginMutation } from 'src/gql/genApiDocs'
 import { AuthProvider } from 'src/hooks/useAuthentication'
 import { Routes } from 'src/routes'
 import theme from 'src/theme'
@@ -19,8 +19,13 @@ import 'src/config/yupLocales'
 
 type TokensType = LoginMutation['login']['tokens']
 
+// let renderCount = 0
+
 export const App = () => {
   const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>()
+
+  // renderCount++
+  // console.log(`${renderCount} renders`)
 
   const loadSession = async () => {
     let accessToken = ''
