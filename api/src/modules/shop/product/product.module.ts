@@ -5,11 +5,7 @@ import {
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm'
 import { Module } from '@nestjs/common'
 
-import {
-  CustomCreateOneProductDTO,
-  CustomUpdateOneProductDTO,
-  ProductDTO,
-} from './product.dto'
+import { CreateProductDTO, ProductDTO, UpdateProductDTO } from './product.dto'
 import { Product } from './product.entity'
 import { ProductResolver } from './product.resolver'
 import { ProductService } from './product.service'
@@ -23,8 +19,8 @@ import { ProductService } from './product.service'
         {
           ServiceClass: ProductService,
           DTOClass: ProductDTO,
-          CreateDTOClass: CustomCreateOneProductDTO,
-          UpdateDTOClass: CustomUpdateOneProductDTO,
+          CreateDTOClass: CreateProductDTO,
+          UpdateDTOClass: UpdateProductDTO,
           enableTotalCount: true,
           pagingStrategy: PagingStrategies.OFFSET,
         },

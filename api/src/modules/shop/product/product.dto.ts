@@ -26,8 +26,8 @@ export class ProductDTO extends SoftDTO {
   priceSizeS: number
 }
 
-@InputType('CustomCreateOneProduct')
-export class CustomCreateOneProductDTO {
+@InputType('CreateProduct')
+export class CreateProductDTO {
   @IsString()
   @IsNotEmpty()
   @MaxLength(40)
@@ -53,9 +53,7 @@ export class CustomCreateOneProductDTO {
 }
 
 @InputType('UpdateProduct')
-export class CustomUpdateOneProductDTO extends PartialType(
-  CustomCreateOneProductDTO
-) {
+export class UpdateProductDTO extends PartialType(CreateProductDTO) {
   id: string
   currentImageDirs?: string[]
 }

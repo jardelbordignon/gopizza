@@ -6,11 +6,7 @@ import { Repository } from 'typeorm'
 
 import { storageProvider } from 'src/base/shared/providers/StorageProvider/implementations'
 
-import {
-  CustomCreateOneProductDTO,
-  CustomUpdateOneProductDTO,
-  ProductDTO,
-} from './product.dto'
+import { CreateProductDTO, ProductDTO, UpdateProductDTO } from './product.dto'
 import { Product } from './product.entity'
 
 @Injectable()
@@ -20,9 +16,7 @@ export class ProductService extends TypeOrmQueryService<Product> {
     super(repo, { useSoftDelete: true })
   }
 
-  async customCreateOneProduct(
-    input: CustomCreateOneProductDTO
-  ): Promise<ProductDTO> {
+  async createProduct(input: CreateProductDTO): Promise<ProductDTO> {
     const product = this.repo.create(input)
 
     const folder = `products/${product.id}`
@@ -31,34 +25,26 @@ export class ProductService extends TypeOrmQueryService<Product> {
     return this.repo.save(product)
   }
 
-  async customUpdateOneProduct(
-    input: CustomUpdateOneProductDTO
-  ): Promise<ProductDTO> {
+  async updateProduct(input: UpdateProductDTO): Promise<ProductDTO> {
     const currentProduct = await this.repo.findOne(input.id)
 
     if (!currentProduct) throw new NotFoundException('Product not found')
 
     const product = Object.assign(currentProduct, input)
 
-    if (input.imageFiles || input.currentImageDirs) {
-      if (input.currentImageDirs) {
-        const deletedImageDirs = product.imageDirs.filter(
-          (imageDir) => !input.currentImageDirs.includes(imageDir)
-        )
+    if (input.currentImageDirs) {
+      product.imageDirs
+        .filter((dir) => !input.currentImageDirs.includes(dir))
+        .forEach((dir) => storageProvider.destroy(dir.split('/medias/')[1]))
 
-        deletedImageDirs.forEach((imageDir) => {
-          storageProvider.destroy(imageDir.split('/medias/')[1])
-        })
+      product.imageDirs = input.currentImageDirs
+    }
 
-        product.imageDirs = input.currentImageDirs
-      }
+    if (input.imageFiles) {
+      const folder = `products/${product.id}`
+      const imageDirs = await storageProvider.store(input.imageFiles, folder)
 
-      if (input.imageFiles) {
-        const folder = `products/${product.id}`
-        const imageDirs = await storageProvider.store(input.imageFiles, folder)
-
-        product.imageDirs = [...product.imageDirs, ...imageDirs]
-      }
+      product.imageDirs = [...product.imageDirs, ...imageDirs]
     }
 
     return this.repo.save(product)

@@ -4,7 +4,7 @@
 
 input CreateManyProductsInput {
   """Array of records to create"""
-  products: [CustomCreateOneProduct!]!
+  products: [CreateProduct!]!
 }
 
 input CreateManyUserTokensInput {
@@ -19,7 +19,7 @@ input CreateManyUsersInput {
 
 input CreateOneProductInput {
   """The record to create"""
-  product: CustomCreateOneProduct!
+  product: CreateProduct!
 }
 
 input CreateOneUserInput {
@@ -32,6 +32,15 @@ input CreateOneUserTokenInput {
   userToken: CreateUserToken!
 }
 
+input CreateProduct {
+  description: String!
+  imageFiles: [UploadScalar!]!
+  name: String!
+  priceSizeL: Float!
+  priceSizeM: Float!
+  priceSizeS: Float!
+}
+
 input CreateUser {
   email: String!
   name: String!
@@ -42,15 +51,6 @@ input CreateUserToken {
   expiresAt: DateTime!
   refreshToken: String!
   userId: String!
-}
-
-input CustomCreateOneProduct {
-  description: String!
-  imageFiles: [UploadScalar!]!
-  name: String!
-  priceSizeL: Float!
-  priceSizeM: Float!
-  priceSizeS: Float!
 }
 
 input DateFieldComparison {
@@ -151,8 +151,7 @@ type Mutation {
   createOneProduct(input: CreateOneProductInput!): Product!
   createOneUser(input: CreateOneUserInput!): User!
   createOneUserToken(input: CreateOneUserTokenInput!): UserToken!
-  customCreateOneProduct(input: CustomCreateOneProduct!): Product!
-  customUpdateOneProduct(input: UpdateProduct!): Product!
+  createProduct(input: CreateProduct!): Product!
   deleteManyProducts(input: DeleteManyProductsInput!): DeleteManyResponse!
   deleteManyUserTokens(input: DeleteManyUserTokensInput!): DeleteManyResponse!
   deleteManyUsers(input: DeleteManyUsersInput!): DeleteManyResponse!
@@ -175,6 +174,7 @@ type Mutation {
   updateOneProduct(input: UpdateOneProductInput!): Product!
   updateOneUser(input: UpdateOneUserInput!): User!
   updateOneUserToken(input: UpdateOneUserTokenInput!): UserToken!
+  updateProduct(input: UpdateProduct!): Product!
 }
 
 input NumberFieldComparison {
