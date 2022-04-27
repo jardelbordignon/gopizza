@@ -1,21 +1,20 @@
-import { useMutation } from '@apollo/client'
-import { useRoute } from '@react-navigation/native'
-import React from 'react'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import React, { useState } from 'react'
 import { Alert, Platform, ScrollView, TouchableOpacity } from 'react-native'
+import {
+  GestureHandlerRootView,
+  RectButton,
+} from 'react-native-gesture-handler'
 
 import { ProductNavigationProps } from 'src/@types/navigation'
 import { Button, ButtonBack, Input, InputPrice, Picture } from 'src/components'
+import { Flex } from 'src/components/Flex'
 import {
-  CustomCreateOneProductMutation,
-  CustomCreateOneProductMutationOptions,
-  CustomCreateOneProductMutationVariables,
-  CustomUpdateOneProductMutation,
-  CustomUpdateOneProductMutationOptions,
-} from 'src/gql/generated/endpointTypes'
-import {
-  CUSTOM_CREATE_ONE_PRODUCT_MUTATION,
-  CUSTOM_UPDATE_ONE_PRODUCT_MUTATION,
-} from 'src/gql/modules/product/mutations'
+  CreateProductMutationVariables,
+  UpdateProductMutationVariables,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+} from 'src/gql/genApiDocs'
 import { YupType, useHookForm } from 'src/hooks/useHookForm'
 import { useImagePicker } from 'src/hooks/useImagePicker'
 import { textCounter } from 'src/utils/textCounter'
@@ -24,11 +23,11 @@ import * as S from './styles'
 
 const yupSchema = (yup: YupType) =>
   yup.object().shape({
-    name: yup.string().required(),
     description: yup.string().required(),
-    priceSizeP: yup.number().required(),
+    name: yup.string().required(),
+    priceSizeL: yup.number().required(),
     priceSizeM: yup.number().required(),
-    priceSizeG: yup.number().required(),
+    priceSizeS: yup.number().required(),
     // imageFile: yup.mixed().required(),
     // .test('fileFormat', 'Image only', value => {
     //   return value && ['image/*'].includes(value.type)
@@ -38,49 +37,42 @@ const yupSchema = (yup: YupType) =>
 export const Product = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
 
-  const { files, openCamera, openLibrary } = useImagePicker()
+  const { openCamera, openLibrary, files } = useImagePicker()
 
+  const { navigate } = useNavigation()
   const route = useRoute()
   const params = route.params as ProductNavigationProps
   const product = params ? params.product : null
 
+  const dirs = product && product.imageDirs ? product.imageDirs : []
+  const [imageDirs, setImageDirs] = useState(dirs)
+
   const { register, isSubmitting, handleSubmit, watch } =
-    useHookForm<CustomCreateOneProductMutationVariables>({
+    useHookForm<CreateProductMutationVariables>({
       defaultValues: product,
       yupSchema,
     })
 
-  const [customCreateOneProduct] = useMutation<CustomCreateOneProductMutation>(
-    CUSTOM_CREATE_ONE_PRODUCT_MUTATION
-  )
-  const [customUpdateOneProduct] = useMutation<CustomUpdateOneProductMutation>(
-    CUSTOM_UPDATE_ONE_PRODUCT_MUTATION
-  )
+  const [createProductMutation] = useCreateProductMutation()
+  const [updateProductMutation] = useUpdateProductMutation()
 
-  const onCreate = async (data: CustomCreateOneProductMutationOptions) => {
-    try {
-      customCreateOneProduct({ variables: { ...data, imageFile: files[0] } })
-    } catch (err) {
-      console.log('error creating product:', err)
-    }
+  const onCreate = async (vars: CreateProductMutationVariables) => {
+    createProductMutation({
+      variables: { ...vars, imageFiles: files },
+      onCompleted: () => navigate('home'),
+      onError: error => console.log(error),
+    })
   }
 
-  const onUpdate = async (data: CustomUpdateOneProductMutationOptions) => {
-    try {
-      // const imageFile = assetsToRNFiles()[0]
-      customUpdateOneProduct({ variables: { ...data } })
-    } catch (err) {
-      console.log('error updating product:', err)
-    }
+  const onUpdate = async (vars: UpdateProductMutationVariables) => {
+    updateProductMutation({
+      variables: { ...vars, imageFiles: files, id: product!.id },
+      onCompleted: () => navigate('home'),
+      onError: error => console.log(error),
+    })
   }
 
   const onPress = handleSubmit(product ? onUpdate : onCreate)
-
-  const pictureUri = files.length
-    ? files[0].uri
-    : product
-    ? product.imageUrl
-    : null
 
   return (
     <S.Wrapper behavior={behavior}>
@@ -95,25 +87,41 @@ export const Product = () => {
           </TouchableOpacity>
         </S.Header>
 
-        <S.Upload>
-          <Picture uri={pictureUri} />
+        <Flex py={10} px={20}>
+          <Flex dir="row">
+            {imageDirs ? (
+              imageDirs.map((imageDir, idx) => (
+                <GestureHandlerRootView key={idx}>
+                  <RectButton
+                    onPress={() =>
+                      setImageDirs(imageDirs.filter(dir => dir !== imageDir))
+                    }>
+                    <Picture uri={`${imageDir}/s.jpg`} />
+                  </RectButton>
+                </GestureHandlerRootView>
+              ))
+            ) : (
+              <Picture uri={null} />
+            )}
+          </Flex>
+          <Flex dir="row" justify="space-evenly">
+            <Button
+              onPress={openCamera}
+              icon="camera"
+              title="Câmera"
+              variant="secondary"
+              flexDir="column"
+            />
 
-          <Button
-            onPress={openCamera}
-            icon="camera"
-            title="Câmera"
-            variant="secondary"
-            flexDir="column"
-          />
-
-          <Button
-            onPress={openLibrary}
-            icon="image-multiple"
-            title="Galeria"
-            variant="secondary"
-            flexDir="column"
-          />
-        </S.Upload>
+            <Button
+              onPress={openLibrary}
+              icon="image-multiple"
+              title="Galeria"
+              variant="secondary"
+              flexDir="column"
+            />
+          </Flex>
+        </Flex>
 
         <S.Form>
           <S.InputGroup>
@@ -138,9 +146,9 @@ export const Product = () => {
 
           <S.InputGroup>
             <S.Label>Tamanhos e preços</S.Label>
-            <InputPrice Label="P" {...register('priceSizeP')} />
+            <InputPrice Label="P" {...register('priceSizeS')} />
             <InputPrice Label="M" {...register('priceSizeM')} />
-            <InputPrice Label="G" {...register('priceSizeG')} />
+            <InputPrice Label="G" {...register('priceSizeL')} />
           </S.InputGroup>
 
           <Button

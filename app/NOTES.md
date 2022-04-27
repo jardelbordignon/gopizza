@@ -357,7 +357,7 @@ configurei codegen para gerar as typagens do endpoint (backend), para isso basta
 <br/>
 **yarn gen-endpoint-types**
 <br/>
-O arquivo src/gql/generated/endpointTypes.ts será atualizado conforme os recursos do endpoint graphql.
+O arquivo src/gql/generated/apiDocs.ts será atualizado conforme os recursos do endpoint graphql.
 <br/><br/>
 
 ### 2.8.3 Apollo Client

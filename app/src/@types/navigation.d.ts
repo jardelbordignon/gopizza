@@ -1,4 +1,4 @@
-import { Product } from 'src/gql/generated/endpointTypes'
+import { Product } from 'src/gql/genApiDocs'
 
 export type ProductNavigationProps = {
   product?: Product

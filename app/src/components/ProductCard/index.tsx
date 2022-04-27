@@ -8,19 +8,13 @@ import { useTheme } from 'styled-components/native'
 
 import { Picture } from '../Picture'
 
+import { Product } from 'src/gql/genApiDocs'
 import { Box } from 'src/styles/CommonStyles'
 
 import * as S from './styles'
 
-export type ProductProps = {
-  id: string
-  imageUrl?: string | null
-  name: string
-  description: string
-}
-
 type Props = RectButtonProps & {
-  product: ProductProps
+  product: Product
 }
 
 export const ProductCard = ({ product, ...rest }: Props) => {
@@ -30,7 +24,10 @@ export const ProductCard = ({ product, ...rest }: Props) => {
     <S.Wrapper>
       <GestureHandlerRootView>
         <S.Content {...rest}>
-          <Picture uri={product.imageUrl} size="104px" />
+          <Picture
+            uri={product.imageDirs ? `${product.imageDirs[0]}/s.jpg` : null}
+            size="104px"
+          />
 
           <S.Details>
             <Box>

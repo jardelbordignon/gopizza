@@ -1,4 +1,3 @@
-import { useLazyQuery } from '@apollo/client'
 import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
 import { FlatList, TouchableOpacity } from 'react-native'
@@ -7,21 +6,9 @@ import { useTheme } from 'styled-components/native'
 
 import happyEmoji from 'src/assets/happy.png'
 import { InputSearch, ProductCard, Progress } from 'src/components'
-import { Product } from 'src/gql/generated/endpointTypes'
-import { PRODUCTS_QUERY } from 'src/gql/modules/product/queries'
+import { Product, useProductsLazyQuery } from 'src/gql/genApiDocs'
 
 import * as S from './styles'
-
-type QueryResponse = {
-  products: {
-    nodes: Product[]
-    pageInfo: {
-      hasNextPage: boolean
-      hasPreviousPage: boolean
-    }
-    totalCount: number
-  }
-}
 
 export const Home = () => {
   const { COLORS } = useTheme()
@@ -33,8 +20,7 @@ export const Home = () => {
   const [page, setPage] = useState(0)
   const limit = 10
 
-  const [productsQuery, { data, loading }] =
-    useLazyQuery<QueryResponse>(PRODUCTS_QUERY)
+  const [productsQuery, { data, loading }] = useProductsLazyQuery()
 
   const loadProducts = async (currentPage = 0, filter = '%%') => {
     setPage(currentPage)
