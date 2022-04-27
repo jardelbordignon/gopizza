@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client'
 import AsyncStorage from '@react-native-community/async-storage'
 import React, {
   ReactNode,
@@ -11,15 +10,11 @@ import { Alert } from 'react-native'
 
 import {
   LoginMutation,
-  ResetPasswordMutation,
-  SendPasswordResetEmailMutation,
-} from 'src/gql/generated/endpointTypes'
-import {
-  LOGIN_MUTATION,
-  LOGOUT_MUTATION,
-  RESET_PASSWORD_MUTATION,
-  SEND_PASSWORD_RESET_EMAIL_MUTATION,
-} from 'src/gql/modules/account/mutations'
+  useLoginMutation,
+  useLogoutMutation,
+  useResetPasswordMutation,
+  useSendPasswordResetEmailMutation,
+} from 'src/gql/genApiDocs'
 
 type UserType = LoginMutation['login']['user'] | null
 
@@ -42,7 +37,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<UserType>(null)
 
-  const [loginMutation] = useMutation<LoginMutation>(LOGIN_MUTATION, {
+  const [loginMutation] = useLoginMutation({
     onCompleted: ({ login }) => {
       const { user: loggedUser, tokens } = login
       setUser(loggedUser)
@@ -54,25 +49,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     },
   })
 
-  const [logoutMutation] = useMutation(LOGOUT_MUTATION)
+  const [logoutMutation] = useLogoutMutation()
 
-  const [sendPasswordResetEmailMutation] =
-    useMutation<SendPasswordResetEmailMutation>(
-      SEND_PASSWORD_RESET_EMAIL_MUTATION,
-      {
-        onCompleted: () => {
-          console.log('Email enviado, redirecionar para a screen de nova senha')
-        },
-        onError: (err: Error) => {
-          Alert.alert('Recuperação de senha', `${err.message}`)
-        },
-      }
-    )
+  const [sendPasswordResetEmailMutation] = useSendPasswordResetEmailMutation({
+    onCompleted: () => {
+      console.log('Email enviado, redirecionar para a screen de nova senha')
+    },
+    onError: (err: Error) => {
+      Alert.alert('Recuperação de senha', `${err.message}`)
+    },
+  })
 
-  const [resetPasswordMutation] = useMutation<ResetPasswordMutation>(
-    RESET_PASSWORD_MUTATION,
-    {}
-  )
+  const [resetPasswordMutation] = useResetPasswordMutation()
 
   const login = async (email: string, password: string) => {
     if (!email || !password) {
