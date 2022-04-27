@@ -42,5 +42,9 @@ export const useImagePicker = () => {
       .then(medias => setFiles([...RNFilesFromMedias(medias), ...files]))
       .catch(err => console.log(err.message))
 
-  return { files, openCamera, openLibrary }
+  const delFile = (fileToDelete: ReactNativeFile) => {
+    setFiles(files.filter(file => file !== fileToDelete))
+  }
+
+  return { files, openCamera, openLibrary, delFile, setFiles }
 }
