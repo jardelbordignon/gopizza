@@ -1,4 +1,7 @@
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import {
+  getBottomSpace,
+  getStatusBarHeight,
+} from 'react-native-iphone-x-helper'
 import LinearGradient from 'react-native-linear-gradient'
 import styled, { css } from 'styled-components/native'
 
@@ -41,10 +44,13 @@ export const MenuHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 25px 24px 0;
   padding-bottom: 22px;
   border-bottom-width: 1px;
   border-bottom-color: ${({ theme }) => theme.COLORS.SHAPE};
+`
+
+export const Content = styled.View`
+  padding: 30px 26px ${getBottomSpace() + 100}px;
 `
 
 export const MenuItemsNumber = styled.Text`
