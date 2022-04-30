@@ -18,6 +18,7 @@ export const Container = styled(RectButton)<ButtonProps>`
   align-items: center;
   width: 100%;
   max-width: 100%;
+  min-width: 56px;
   max-height: 56px;
   min-height: 56px;
   border-radius: 12px;

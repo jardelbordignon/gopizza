@@ -28,9 +28,17 @@ export const Button = ({
   return (
     <GestureHandlerRootView>
       <S.Container variant={variant} enabled={!loading} {...rest}>
-        {icon && <Icons name={icon} size={22} color={COLORS.TITLE} />}
-        {title && <S.Title>{title}</S.Title>}
-        {loading ? <S.Load /> : icon ? <S.Space /> : null}
+        {title ? (
+          <>
+            {icon && <Icons name={icon} size={22} color={COLORS.TITLE} />}
+            {<S.Title>{title}</S.Title>}
+            {loading ? <S.Load /> : icon ? <S.Space /> : null}
+          </>
+        ) : loading ? (
+          <S.Load />
+        ) : icon ? (
+          <Icons name={icon} size={22} color={COLORS.TITLE} />
+        ) : null}
       </S.Container>
     </GestureHandlerRootView>
   )
