@@ -5,8 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
 import { storageProvider } from 'src/base/shared/providers/StorageProvider/implementations'
+import { deleteFolder } from 'src/base/shared/providers/StorageProvider/utils'
 
-import { CreateProductDTO, ProductDTO, UpdateProductDTO } from './product.dto'
+import {
+  CreateProductDTO,
+  DeleteProductDTO,
+  ProductDTO,
+  UpdateProductDTO,
+} from './product.dto'
 import { Product } from './product.entity'
 
 @Injectable()
@@ -48,5 +54,20 @@ export class ProductService extends TypeOrmQueryService<Product> {
     }
 
     return this.repo.save(product)
+  }
+
+  async deleteProduct(input: DeleteProductDTO): Promise<boolean> {
+    const product = await this.repo.findOne(input.id)
+
+    if (!product) throw new NotFoundException('Product not found')
+
+    if (input.isSoft) {
+      product.deletedAt = new Date()
+      return !!this.repo.save(product)
+    }
+
+    if (product.imageDirs) storageProvider.destroy(`products/${product.id}`)
+
+    return !!this.repo.delete(input.id)
   }
 }

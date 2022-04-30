@@ -113,6 +113,11 @@ input DeleteOneUserTokenInput {
   id: ID!
 }
 
+input DeleteProduct {
+  id: String!
+  isSoft: Boolean
+}
+
 input IDFilterComparison {
   eq: ID
   gt: ID
@@ -158,6 +163,7 @@ type Mutation {
   deleteOneProduct(input: DeleteOneProductInput!): ProductDeleteResponse!
   deleteOneUser(input: DeleteOneUserInput!): UserDeleteResponse!
   deleteOneUserToken(input: DeleteOneUserTokenInput!): UserTokenDeleteResponse!
+  deleteProduct(input: DeleteProduct!): Boolean!
   login(input: LoginInput!): LoginResponse!
   logout(input: LogoutInput!): Boolean!
   removeUserFromUserToken(input: RemoveUserFromUserTokenInput!): UserToken!

@@ -2,7 +2,12 @@ import { Filter, UpdateManyResponse } from '@nestjs-query/core'
 import { FilterType, UpdateManyResponseType } from '@nestjs-query/query-graphql'
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql'
 
-import { CreateProductDTO, ProductDTO, UpdateProductDTO } from './product.dto'
+import {
+  CreateProductDTO,
+  DeleteProductDTO,
+  ProductDTO,
+  UpdateProductDTO,
+} from './product.dto'
 import { ProductService } from './product.service'
 
 @Resolver(() => ProductDTO)
@@ -17,6 +22,11 @@ export class ProductResolver {
   @Mutation(() => ProductDTO)
   updateProduct(@Args('input') input: UpdateProductDTO): Promise<ProductDTO> {
     return this.service.updateProduct(input)
+  }
+
+  @Mutation(() => Boolean)
+  deleteProduct(@Args('input') input: DeleteProductDTO): Promise<boolean> {
+    return this.service.deleteProduct(input)
   }
 
   @Mutation(() => ProductDTO)

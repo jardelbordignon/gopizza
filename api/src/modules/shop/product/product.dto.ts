@@ -57,3 +57,9 @@ export class UpdateProductDTO extends PartialType(CreateProductDTO) {
   id: string
   currentImageDirs?: string[]
 }
+
+@InputType('DeleteProduct')
+export class DeleteProductDTO {
+  id: string
+  isSoft?: boolean
+}
