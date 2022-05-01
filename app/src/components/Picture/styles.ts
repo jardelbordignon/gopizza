@@ -1,15 +1,15 @@
 import styled, { css } from 'styled-components/native'
 
 export type PictureStyleProps = {
-  size?: string
+  size?: number
   rounded?: boolean
 }
 
 export const Image = styled.Image<PictureStyleProps>`
   ${({ size, rounded }) => css`
-    width: ${size || '100px'};
-    height: ${size || '100px'};
-    border-radius: ${rounded ? size || '100px' : '10px'};
+    width: ${size || 100}px;
+    height: ${size || 100}px;
+    border-radius: ${rounded ? size || 100 : 10}px;
   `}
 `
 export const PlaceholderWrapper = styled.View<PictureStyleProps>`
@@ -17,9 +17,9 @@ export const PlaceholderWrapper = styled.View<PictureStyleProps>`
   align-items: center;
 
   ${({ theme, size, rounded }) => css`
-    width: ${size || '100px'};
-    height: ${size || '100px'};
-    border-radius: ${rounded ? size || '100px' : '10px'};
+    width: ${size || 100}px;
+    height: ${size || 100}px;
+    border-radius: ${rounded ? size || 100 : 10}px;
     border: 1px dashed ${theme.COLORS.ALERT_900};
   `}
 `
