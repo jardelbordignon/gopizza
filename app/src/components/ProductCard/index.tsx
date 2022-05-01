@@ -27,6 +27,7 @@ export const ProductCard = ({ product, ...rest }: Props) => {
           <Picture
             uri={product.imageDirs ? `${product.imageDirs[0]}/s.jpg` : null}
             size="104px"
+            rounded
           />
 
           <S.Details>
