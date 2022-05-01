@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
 import React, { useState } from 'react'
-import { Alert, Platform, ScrollView, TouchableOpacity } from 'react-native'
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import {
   GestureHandlerRootView,
   RectButton,
@@ -13,6 +13,7 @@ import {
   CreateProductMutationVariables,
   UpdateProductMutationVariables,
   useCreateProductMutation,
+  useDeleteProductMutation,
   useUpdateProductMutation,
 } from 'src/gql/genApiDocs'
 import { YupType, useHookForm } from 'src/hooks/useHookForm'
@@ -37,9 +38,9 @@ const yupSchema = (yup: YupType) =>
 export const Product = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
 
-  const { openCamera, openLibrary, files } = useImagePicker()
+  const { openCamera, openLibrary, files, deleteFile } = useImagePicker()
 
-  const { navigate } = useNavigation()
+  const { navigate, goBack } = useNavigation()
   const route = useRoute()
   const params = route.params as ProductNavigationProps
   const product = params ? params.product : null
@@ -55,6 +56,7 @@ export const Product = () => {
 
   const [createProductMutation] = useCreateProductMutation()
   const [updateProductMutation] = useUpdateProductMutation()
+  const [deleteProductMutation] = useDeleteProductMutation()
 
   const onCreate = async (vars: CreateProductMutationVariables) => {
     createProductMutation({
@@ -72,22 +74,47 @@ export const Product = () => {
     })
   }
 
+  const onDelete = async (id: string, isSoft?: boolean) => {
+    deleteProductMutation({
+      variables: { id, isSoft },
+      onCompleted: () => navigate('home'),
+      onError: error => console.log(error),
+    })
+  }
+
   const onPress = handleSubmit(product ? onUpdate : onCreate)
 
   return (
     <S.Wrapper behavior={behavior}>
       <ScrollView>
         <S.Header>
-          <ButtonBack onPress={() => Alert.alert('Ok')} />
+          <ButtonBack onPress={goBack} />
 
           <S.Title>{product ? 'Editar' : 'Registrar'}</S.Title>
 
-          <TouchableOpacity>
-            <S.DeleteLabel>Deletar</S.DeleteLabel>
-          </TouchableOpacity>
+          {product ? (
+            <TouchableOpacity onPress={() => onDelete(product.id)}>
+              <S.DeleteLabel>Deletar</S.DeleteLabel>
+            </TouchableOpacity>
+          ) : (
+            <View style={{ width: 20 }} />
+          )}
         </S.Header>
 
         <Flex py={10} px={20}>
+          <Flex dir="row">
+            {files ? (
+              files.map((file, idx) => (
+                <GestureHandlerRootView key={idx}>
+                  <RectButton onPress={() => deleteFile(file)}>
+                    <Picture uri={file.uri} />
+                  </RectButton>
+                </GestureHandlerRootView>
+              ))
+            ) : (
+              <Picture uri={''} />
+            )}
+          </Flex>
           <Flex dir="row">
             {imageDirs ? (
               imageDirs.map((imageDir, idx) => (
@@ -101,7 +128,7 @@ export const Product = () => {
                 </GestureHandlerRootView>
               ))
             ) : (
-              <Picture uri={null} />
+              <Picture uri={''} />
             )}
           </Flex>
           <Flex dir="row" justify="space-evenly">
@@ -151,7 +178,7 @@ export const Product = () => {
             <InputPrice Label="G" {...register('priceSizeL')} />
           </S.InputGroup>
 
-          <Button
+          <S.SubmitButton
             title={product ? 'Salvar alterações na pizza' : 'Cadastrar pizza'}
             onPress={onPress as any}
             loading={isSubmitting}

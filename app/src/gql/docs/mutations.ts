@@ -97,4 +97,8 @@ gql`
       priceSizeS
     }
   }
+
+  mutation DeleteProduct($id: String!, $isSoft: Boolean) {
+    deleteProduct(input: { id: $id, isSoft: $isSoft })
+  }
 `

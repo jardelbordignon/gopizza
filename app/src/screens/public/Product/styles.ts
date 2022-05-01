@@ -1,4 +1,5 @@
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
 import LinearGradient from 'react-native-linear-gradient'
 import styled, { css } from 'styled-components/native'
 
@@ -86,4 +87,8 @@ export const MaxCharacters = styled.Text`
     font-family: ${theme.FONTS.TEXT};
     color: ${theme.COLORS.SECONDARY_900};
   `}
+`
+
+export const SubmitButton = styled(Button)`
+  margin-bottom: ${getBottomSpace() + 40}px;
 `
