@@ -39,5 +39,5 @@ export const Selected = styled.View`
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.COLORS.SUCCESS_900};
+  background-color: ${({ theme }) => theme.COLORS.SUCCESS_900};
 `
