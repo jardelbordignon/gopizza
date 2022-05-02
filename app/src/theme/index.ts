@@ -25,7 +25,7 @@ export default {
   },
 
   FONTS: {
-    TITLE: 'DMSerifDisplay',
-    TEXT: 'DMSans',
+    TITLE: 'Poppins-SemiBold',
+    TEXT: 'Poppins-Regular',
   },
 }
