@@ -18,3 +18,11 @@ export const ImageContainer = styled.View`
   align-items: center;
   top: -120px;
 `
+
+export const SizesContainer = styled.View`
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding: 0 24px;
+`

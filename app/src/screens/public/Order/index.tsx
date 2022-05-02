@@ -1,7 +1,7 @@
 import React from 'react'
 import { Platform } from 'react-native'
 
-import { ButtonBack, Picture } from 'src/components'
+import { ButtonBack, Picture, RadioButton } from 'src/components'
 
 import * as S from './styles'
 
@@ -21,6 +21,12 @@ export const Order = () => {
           rounded
         />
       </S.ImageContainer>
+
+      <S.SizesContainer>
+        <RadioButton title="Pequena" selected={false} />
+        <RadioButton title="Média" selected={true} />
+        <RadioButton title="Grande" selected={false} />
+      </S.SizesContainer>
     </S.Wrapper>
   )
 }
