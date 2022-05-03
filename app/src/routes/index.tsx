@@ -3,15 +3,16 @@ import React from 'react'
 
 import { useAuth } from 'src/hooks/useAuthentication'
 
-import { PrivateRoutes } from './private'
-import { PublicRoutes } from './public'
+import { PrivateStackRoutes } from './private.stack'
+// import { PublicStackRoutes } from './public.stack'
+import { PublicTabRoutes } from './public.tab'
 
 export const Routes = () => {
   const { user } = useAuth()
 
   return (
     <NavigationContainer>
-      {user ? <PrivateRoutes /> : <PublicRoutes />}
+      {user ? <PrivateStackRoutes /> : <PublicTabRoutes />}
     </NavigationContainer>
   )
 }

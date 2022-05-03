@@ -9,7 +9,7 @@ import { SignIn } from 'src/screens/public/SignIn'
 
 const { Navigator, Screen } = createNativeStackNavigator()
 
-export const PublicRoutes = () => {
+export const PublicStackRoutes = () => {
   return (
     <Navigator screenOptions={{ headerShown: false }}>
       <Screen name="orders" component={Orders} />
