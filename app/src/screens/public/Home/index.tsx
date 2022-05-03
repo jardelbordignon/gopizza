@@ -5,9 +5,10 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useTheme } from 'styled-components/native'
 
 import happyEmoji from 'src/assets/happy.png'
-import { Button, InputSearch, ProductCard, Progress } from 'src/components'
+import { Button, InputSearch, Progress } from 'src/components'
 import { Product, useProductsLazyQuery } from 'src/gql/genApiDocs'
 
+import { ProductCard } from './ProductCard'
 import * as S from './styles'
 
 export const Home = () => {

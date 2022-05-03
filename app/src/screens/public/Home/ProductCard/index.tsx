@@ -6,7 +6,7 @@ import {
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useTheme } from 'styled-components/native'
 
-import { Picture } from '../Picture'
+import { Picture } from '../../../../components/Picture'
 
 import { Product } from 'src/gql/genApiDocs'
 import { Box } from 'src/styles/CommonStyles'
@@ -26,7 +26,7 @@ export const ProductCard = ({ product, ...rest }: Props) => {
         <S.Content {...rest}>
           <Picture
             uri={product.imageDirs ? `${product.imageDirs[0]}/s.jpg` : null}
-            size="104px"
+            size={104}
             rounded
           />
 
