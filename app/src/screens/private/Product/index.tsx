@@ -40,7 +40,7 @@ export const Product = () => {
 
   const { openCamera, openLibrary, files, deleteFile } = useImagePicker()
 
-  const { navigate, goBack } = useNavigation()
+  const { navigate } = useNavigation()
   const route = useRoute()
   const params = route.params as ProductNavigationProps
   const product = params ? params.product : null
@@ -88,7 +88,7 @@ export const Product = () => {
     <S.Wrapper behavior={behavior}>
       <ScrollView>
         <S.Header>
-          <ButtonBack onPress={goBack} />
+          <ButtonBack />
 
           <S.Title>{product ? 'Editar' : 'Registrar'}</S.Title>
 

@@ -4,7 +4,7 @@ import { FlatList } from 'react-native'
 import { OrderCard } from './OrderCard'
 import * as S from './styles'
 
-export const Orders = () => {
+export const OrderList = () => {
   return (
     <S.Wrapper>
       <S.Header>

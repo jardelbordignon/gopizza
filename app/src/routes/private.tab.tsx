@@ -4,12 +4,13 @@ import { Platform } from 'react-native'
 import { useTheme } from 'styled-components/native'
 
 import { BottomMenu } from 'src/components'
-import { Home } from 'src/screens/public/Home'
-import { Orders } from 'src/screens/public/Orders'
+import { Home } from 'src/screens/private/Home'
+import { OrderForm } from 'src/screens/private/Order/Form'
+import { OrderList } from 'src/screens/private/Order/List'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
-export const PublicTabRoutes = () => {
+export const PrivateTabRoutes = () => {
   const { COLORS } = useTheme()
   const isIos = Platform.OS === 'ios'
 
@@ -36,10 +37,20 @@ export const PublicTabRoutes = () => {
       />
       <Screen
         name="orders"
-        component={Orders}
+        component={OrderList}
         options={{
           tabBarIcon: ({ color }) => (
             <BottomMenu title={'Pedidos'} color={color} notifications="1" />
+          ),
+        }}
+      />
+
+      <Screen
+        name="order"
+        component={OrderForm}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <BottomMenu title={'Novo pedido'} color={color} />
           ),
         }}
       />

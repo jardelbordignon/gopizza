@@ -7,6 +7,7 @@ import { useTheme } from 'styled-components/native'
 import happyEmoji from 'src/assets/happy.png'
 import { Button, InputSearch, Progress } from 'src/components'
 import { Product, useProductsLazyQuery } from 'src/gql/genApiDocs'
+import { useAuth } from 'src/hooks/useAuthentication'
 
 import { ProductCard } from './ProductCard'
 import * as S from './styles'
@@ -14,15 +15,16 @@ import * as S from './styles'
 export const Home = () => {
   const { COLORS } = useTheme()
   const { navigate } = useNavigation()
+  const { user, logout, loading: authLoading } = useAuth()
+  const isAdmin = user && user.isAdmin
 
   const [products, setProducts] = useState<Product[]>([])
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
   const limit = 10
 
-  const [productsQuery, { data, loading }] = useProductsLazyQuery()
-  const isLoading = loading || !data
-  const hasNoData = !products.length || !data
+  const [productsQuery, { data, loading: dataLoading }] = useProductsLazyQuery()
+  const loadingProducts = !data || dataLoading
 
   const loadProducts = async (currentPage = 0, filter = '%%') => {
     setPage(currentPage)
@@ -60,14 +62,24 @@ export const Home = () => {
     }
   }
 
-  const navToProduct = (product?: Product) => {
-    navigate('product', { product })
+  const handleNavigate = (product?: Product) => {
+    const route = isAdmin ? 'product' : 'order'
+    navigate(route, { product })
   }
 
   const flatListContentStyle = {
     paddingTop: 20,
     paddingBottom: 120,
   }
+
+  const ButtonNewProduct = () =>
+    isAdmin ? (
+      <Button
+        title="Cadastrar um produto"
+        onPress={() => handleNavigate()}
+        enabled={!loadingProducts}
+      />
+    ) : null
 
   return (
     <S.Wrapper>
@@ -77,7 +89,7 @@ export const Home = () => {
           <S.GreetingText>Olá, Admin</S.GreetingText>
         </S.Greeting>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={logout} disabled={authLoading}>
           <Icons name="logout" color={COLORS.TITLE} size={24} />
         </TouchableOpacity>
       </S.Header>
@@ -91,22 +103,19 @@ export const Home = () => {
       />
 
       <S.Content>
-        {hasNoData ? (
-          isLoading ? (
+        {!products.length || !data ? (
+          loadingProducts ? (
             <Progress />
           ) : (
             <>
               <S.Title>Nenhum produto encontrado</S.Title>
-              <Button
-                title="Cadastrar um produto"
-                onPress={() => navToProduct()}
-              />
+              <ButtonNewProduct />
             </>
           )
         ) : (
           <>
             <S.MenuHeader>
-              <Button icon="plus" onPress={() => navToProduct()} />
+              <ButtonNewProduct />
               <S.Title>Cardápio</S.Title>
               <S.MenuItemsNumber>
                 {data.products.totalCount} pizzas
@@ -119,13 +128,13 @@ export const Home = () => {
               renderItem={({ item }) => (
                 <ProductCard
                   product={item}
-                  onPress={() => navToProduct(item)}
+                  onPress={() => handleNavigate(item)}
                 />
               )}
               showsVerticalScrollIndicator={false}
               onEndReachedThreshold={0.5}
               onEndReached={onEndReached}
-              ListFooterComponent={isLoading ? <Progress /> : null}
+              ListFooterComponent={loadingProducts ? <Progress /> : null}
               contentContainerStyle={flatListContentStyle}
             />
           </>

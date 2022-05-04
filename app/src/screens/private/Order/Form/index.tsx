@@ -1,6 +1,8 @@
+import { useRoute } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { Platform } from 'react-native'
 
+import { OrderNavigationProps } from 'src/@types/navigation'
 import { Button, ButtonBack, Input, Picture, RadioButton } from 'src/components'
 import { YupType, useHookForm } from 'src/hooks/useHookForm'
 import { PIZZA_SIZES } from 'src/utils/pizzaSizes'
@@ -18,11 +20,15 @@ const yupSchema = (yup: YupType) =>
     quantity: yup.number().required(),
   })
 
-export const Order = () => {
+export const OrderForm = () => {
   const behavior = Platform.OS === 'ios' ? 'padding' : undefined
   const [size, setSize] = useState('')
 
+  const route = useRoute()
+  const { product } = route.params as OrderNavigationProps
+
   const { register } = useHookForm<FormData>({
+    defaultValues: product,
     yupSchema,
   })
 
@@ -30,18 +36,18 @@ export const Order = () => {
     <S.Wrapper behavior={behavior}>
       <S.Container>
         <S.Header>
-          <ButtonBack onPress={() => {}} />
+          <ButtonBack />
         </S.Header>
 
         <S.Content>
           <Picture
-            uri={'https://github.com/jardelbordignon.png'}
+            uri={product.imageDirs ? `${product.imageDirs[0]}/s.jpg` : null}
             size={240}
             rounded
           />
 
-          <S.Title>Nome da Pizza</S.Title>
-          <S.Label>Selecione um tamanho</S.Label>
+          <S.Title>{product.name}</S.Title>
+          <S.Label>Tamanhos</S.Label>
 
           <S.SizesContainer>
             {PIZZA_SIZES.map(pizzaSize => (
