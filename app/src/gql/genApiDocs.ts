@@ -19,6 +19,11 @@ export type Scalars = {
   UploadScalar: any;
 };
 
+export type BooleanFieldComparison = {
+  is?: InputMaybe<Scalars['Boolean']>;
+  isNot?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type CreateManyProductsInput = {
   /** Array of records to create */
   products: Array<CreateProduct>;
@@ -60,6 +65,7 @@ export type CreateProduct = {
 
 export type CreateUser = {
   email: Scalars['String'];
+  isAdmin?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
   password: Scalars['String'];
 };
@@ -718,6 +724,7 @@ export type UpdateProduct = {
 
 export type UpdateUser = {
   email?: InputMaybe<Scalars['String']>;
+  isAdmin?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
   password?: InputMaybe<Scalars['String']>;
 };
@@ -735,6 +742,7 @@ export type User = {
   deletedAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
   id: Scalars['ID'];
+  isAdmin: Scalars['Boolean'];
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -745,6 +753,7 @@ export type UserAggregateGroupBy = {
   deletedAt?: Maybe<Scalars['DateTime']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -765,6 +774,7 @@ export type UserCountAggregate = {
   deletedAt?: Maybe<Scalars['Int']>;
   email?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
+  isAdmin?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['Int']>;
 };
@@ -775,6 +785,7 @@ export type UserDeleteFilter = {
   deletedAt?: InputMaybe<DateFieldComparison>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
+  isAdmin?: InputMaybe<BooleanFieldComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserDeleteFilter>>;
   updatedAt?: InputMaybe<DateFieldComparison>;
@@ -786,6 +797,7 @@ export type UserDeleteResponse = {
   deletedAt?: Maybe<Scalars['DateTime']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -796,6 +808,7 @@ export type UserFilter = {
   deletedAt?: InputMaybe<DateFieldComparison>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
+  isAdmin?: InputMaybe<BooleanFieldComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserFilter>>;
   updatedAt?: InputMaybe<DateFieldComparison>;
@@ -832,6 +845,7 @@ export enum UserSortFields {
   DeletedAt = 'deletedAt',
   Email = 'email',
   Id = 'id',
+  IsAdmin = 'isAdmin',
   Name = 'name',
   UpdatedAt = 'updatedAt'
 }
@@ -900,6 +914,7 @@ export type UserTokenFilterUserFilter = {
   deletedAt?: InputMaybe<DateFieldComparison>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
+  isAdmin?: InputMaybe<BooleanFieldComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserTokenFilterUserFilter>>;
   updatedAt?: InputMaybe<DateFieldComparison>;
@@ -945,19 +960,21 @@ export type UserUpdateFilter = {
   deletedAt?: InputMaybe<DateFieldComparison>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
+  isAdmin?: InputMaybe<BooleanFieldComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserUpdateFilter>>;
   updatedAt?: InputMaybe<DateFieldComparison>;
 };
 
 export type CreateUserMutationVariables = Exact<{
-  name: Scalars['String'];
   email: Scalars['String'];
+  name: Scalars['String'];
   password: Scalars['String'];
+  isAdmin: Scalars['Boolean'];
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createOneUser: { __typename?: 'User', id: string, name: string, email: string } };
+export type CreateUserMutation = { __typename?: 'Mutation', createOneUser: { __typename?: 'User', id: string, isAdmin: boolean, name: string, email: string, createdAt?: any | null } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -965,7 +982,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', user: { __typename?: 'User', id: string, name: string, email: string }, tokens: { __typename?: 'TokensType', accessToken: string, refreshToken: string } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', user: { __typename?: 'User', id: string, name: string, email: string, isAdmin: boolean }, tokens: { __typename?: 'TokensType', accessToken: string, refreshToken: string } } };
 
 export type LogoutMutationVariables = Exact<{
   userId: Scalars['String'];
@@ -1039,11 +1056,15 @@ export type ProductsQuery = { __typename?: 'Query', products: { __typename?: 'Pr
 
 
 export const CreateUserDocument = gql`
-    mutation createUser($name: String!, $email: String!, $password: String!) {
-  createOneUser(input: {user: {name: $name, email: $email, password: $password}}) {
+    mutation CreateUser($email: String!, $name: String!, $password: String!, $isAdmin: Boolean!) {
+  createOneUser(
+    input: {user: {email: $email, name: $name, password: $password, isAdmin: $isAdmin}}
+  ) {
     id
+    isAdmin
     name
     email
+    createdAt
   }
 }
     `;
@@ -1062,9 +1083,10 @@ export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, C
  * @example
  * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
  *   variables: {
- *      name: // value for 'name'
  *      email: // value for 'email'
+ *      name: // value for 'name'
  *      password: // value for 'password'
+ *      isAdmin: // value for 'isAdmin'
  *   },
  * });
  */
@@ -1082,6 +1104,7 @@ export const LoginDocument = gql`
       id
       name
       email
+      isAdmin
     }
     tokens {
       accessToken

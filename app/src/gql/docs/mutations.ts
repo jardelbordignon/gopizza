@@ -2,13 +2,27 @@ import { gql } from '@apollo/client'
 
 gql`
   # Account
-  mutation createUser($name: String!, $email: String!, $password: String!) {
+  mutation CreateUser(
+    $email: String!
+    $name: String!
+    $password: String!
+    $isAdmin: Boolean!
+  ) {
     createOneUser(
-      input: { user: { name: $name, email: $email, password: $password } }
+      input: {
+        user: {
+          email: $email
+          name: $name
+          password: $password
+          isAdmin: $isAdmin
+        }
+      }
     ) {
       id
+      isAdmin
       name
       email
+      createdAt
     }
   }
 
@@ -18,6 +32,7 @@ gql`
         id
         name
         email
+        isAdmin
       }
       tokens {
         accessToken
