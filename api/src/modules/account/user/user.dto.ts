@@ -1,6 +1,12 @@
 import { FilterableField } from '@nestjs-query/query-graphql'
 import { InputType, ObjectType, PartialType } from '@nestjs/graphql'
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator'
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator'
 
 import { SoftDTO } from 'src/base/shared/dtos/soft.dto'
 
@@ -11,6 +17,9 @@ export class UserDTO extends SoftDTO {
 
   @FilterableField()
   email: string
+
+  @FilterableField()
+  isAdmin: boolean
 
   // @Field()
   // password: string
@@ -32,6 +41,9 @@ export class CreateUserDTO {
   @IsString()
   @MaxLength(30)
   password: string
+
+  @IsBoolean()
+  isAdmin?: boolean
 }
 
 // Update

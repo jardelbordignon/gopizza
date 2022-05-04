@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input BooleanFieldComparison {
+  is: Boolean
+  isNot: Boolean
+}
+
 input CreateManyProductsInput {
   """Array of records to create"""
   products: [CreateProduct!]!
@@ -43,6 +48,7 @@ input CreateProduct {
 
 input CreateUser {
   email: String!
+  isAdmin: Boolean
   name: String!
   password: String!
 }
@@ -547,6 +553,7 @@ input UpdateProduct {
 
 input UpdateUser {
   email: String
+  isAdmin: Boolean
   name: String
   password: String
 }
@@ -565,6 +572,7 @@ type User {
   deletedAt: DateTime
   email: String!
   id: ID!
+  isAdmin: Boolean!
   name: String!
   updatedAt: DateTime
 }
@@ -574,6 +582,7 @@ type UserAggregateGroupBy {
   deletedAt: DateTime
   email: String
   id: ID
+  isAdmin: Boolean
   name: String
   updatedAt: DateTime
 }
@@ -594,6 +603,7 @@ type UserCountAggregate {
   deletedAt: Int
   email: Int
   id: Int
+  isAdmin: Int
   name: Int
   updatedAt: Int
 }
@@ -604,6 +614,7 @@ input UserDeleteFilter {
   deletedAt: DateFieldComparison
   email: StringFieldComparison
   id: IDFilterComparison
+  isAdmin: BooleanFieldComparison
   name: StringFieldComparison
   or: [UserDeleteFilter!]
   updatedAt: DateFieldComparison
@@ -614,6 +625,7 @@ type UserDeleteResponse {
   deletedAt: DateTime
   email: String
   id: ID
+  isAdmin: Boolean
   name: String
   updatedAt: DateTime
 }
@@ -624,6 +636,7 @@ input UserFilter {
   deletedAt: DateFieldComparison
   email: StringFieldComparison
   id: IDFilterComparison
+  isAdmin: BooleanFieldComparison
   name: StringFieldComparison
   or: [UserFilter!]
   updatedAt: DateFieldComparison
@@ -658,6 +671,7 @@ enum UserSortFields {
   deletedAt
   email
   id
+  isAdmin
   name
   updatedAt
 }
@@ -723,6 +737,7 @@ input UserTokenFilterUserFilter {
   deletedAt: DateFieldComparison
   email: StringFieldComparison
   id: IDFilterComparison
+  isAdmin: BooleanFieldComparison
   name: StringFieldComparison
   or: [UserTokenFilterUserFilter!]
   updatedAt: DateFieldComparison
@@ -766,6 +781,7 @@ input UserUpdateFilter {
   deletedAt: DateFieldComparison
   email: StringFieldComparison
   id: IDFilterComparison
+  isAdmin: BooleanFieldComparison
   name: StringFieldComparison
   or: [UserUpdateFilter!]
   updatedAt: DateFieldComparison

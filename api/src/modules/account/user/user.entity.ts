@@ -14,4 +14,7 @@ export class User extends SoftEntity {
 
   @Column({ nullable: true, transformer: hashPasswordTransform })
   password?: string
+
+  @Column({ default: false })
+  isAdmin: boolean
 }
