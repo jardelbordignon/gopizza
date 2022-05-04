@@ -20,10 +20,11 @@ type UserType = LoginMutation['login']['user'] | null
 
 type AuthContextProps = {
   login(email: string, password: string): Promise<void>
-  logout(userId: string): void
+  logout(): Promise<void>
   sendPasswordResetEmail(email: string): Promise<void>
   resetPassword(refreshToken: string, password: string): Promise<void>
   loading: boolean
+  keepingAuth: boolean
   user: UserType
 }
 
@@ -34,21 +35,11 @@ type AuthProviderProps = {
 const AuthContext = createContext({} as AuthContextProps)
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [keepingAuth, setKeepingAuth] = useState(false)
   const [user, setUser] = useState<UserType>(null)
 
-  const [loginMutation] = useLoginMutation({
-    onCompleted: ({ login }) => {
-      const { user: loggedUser, tokens } = login
-      setUser(loggedUser)
-      AsyncStorage.setItem('@GoPizza:user', JSON.stringify(loggedUser))
-      AsyncStorage.setItem('@GoPizza:tokens', JSON.stringify(tokens))
-    },
-    onError: (err: Error) => {
-      Alert.alert('Login', `${err.message}`)
-    },
-  })
-
+  const [loginMutation] = useLoginMutation()
   const [logoutMutation] = useLogoutMutation()
 
   const [sendPasswordResetEmailMutation] = useSendPasswordResetEmailMutation({
@@ -62,21 +53,37 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const [resetPasswordMutation] = useResetPasswordMutation()
 
-  const login = async (email: string, password: string) => {
-    if (!email || !password) {
-      return Alert.alert('Autenticação', 'Informe o e-mail e a senha')
-    }
-
+  const login = async (email: string, password: string): Promise<void> => {
     setLoading(true)
-    await loginMutation({ variables: { email, password } })
-    setLoading(false)
+    try {
+      const res = await loginMutation({ variables: { email, password } })
+
+      if (res.data) {
+        setKeepingAuth(true)
+        const { user: _user, tokens } = res.data.login
+        await AsyncStorage.multiSet([
+          ['@GoPizza:user', JSON.stringify(_user)],
+          ['@GoPizza:tokens', JSON.stringify(tokens)],
+        ])
+        setUser(_user)
+        setKeepingAuth(false)
+      }
+    } catch (error: any) {
+      Alert.alert('Erro ao efetuar login', error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const logout = (userId: string): void => {
-    logoutMutation({ variables: { userId } })
-    AsyncStorage.removeItem('@GoPizza:user')
-    AsyncStorage.removeItem('@GoPizza:tokens')
-    setUser(null)
+  const logout = async (): Promise<void> => {
+    if (!user) return
+    setLoading(true)
+    const res = await logoutMutation({ variables: { userId: user.id } })
+    if (res.data && res.data.logout) {
+      await AsyncStorage.multiRemove(['@GoPizza:user', '@GoPizza:tokens'])
+      setUser(null)
+    }
+    setLoading(false)
   }
 
   const sendPasswordResetEmail = async (email: string) => {
@@ -100,8 +107,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const loadStoredUser = async () => {
-    setLoading(true)
-
     const storedUser = await AsyncStorage.getItem('@GoPizza:user')
 
     if (storedUser) {
@@ -124,6 +129,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         sendPasswordResetEmail,
         resetPassword,
         loading,
+        keepingAuth,
         user,
       }}>
       {children}

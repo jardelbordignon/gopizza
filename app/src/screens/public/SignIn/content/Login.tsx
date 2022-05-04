@@ -24,8 +24,8 @@ export const Login = () => {
   const { login, loading } = useAuth()
   const { register, handleSubmit } = useHookForm<FormData>({ yupSchema })
 
-  const onSubmit = handleSubmit(async ({ email, password }: FormData) => {
-    await login(email, password)
+  const onSubmit = handleSubmit(({ email, password }: FormData) => {
+    login(email, password)
   })
 
   return (
