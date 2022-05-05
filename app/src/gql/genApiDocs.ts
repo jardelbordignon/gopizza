@@ -24,6 +24,11 @@ export type BooleanFieldComparison = {
   isNot?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type CreateManyOrdersInput = {
+  /** Array of records to create */
+  orders: Array<CreateOrder>;
+};
+
 export type CreateManyProductsInput = {
   /** Array of records to create */
   products: Array<CreateProduct>;
@@ -39,6 +44,11 @@ export type CreateManyUsersInput = {
   users: Array<CreateUser>;
 };
 
+export type CreateOneOrderInput = {
+  /** The record to create */
+  order: CreateOrder;
+};
+
 export type CreateOneProductInput = {
   /** The record to create */
   product: CreateProduct;
@@ -52,6 +62,17 @@ export type CreateOneUserInput = {
 export type CreateOneUserTokenInput = {
   /** The record to create */
   userToken: CreateUserToken;
+};
+
+export type CreateOrder = {
+  amount: Scalars['Float'];
+  image: Scalars['String'];
+  pizza: Scalars['String'];
+  quantity: Scalars['Float'];
+  size: Scalars['String'];
+  status: Scalars['String'];
+  table: Scalars['Float'];
+  userId: Scalars['String'];
 };
 
 export type CreateProduct = {
@@ -96,6 +117,11 @@ export type DateFieldComparisonBetween = {
   upper: Scalars['DateTime'];
 };
 
+export type DeleteManyOrdersInput = {
+  /** Filter to find records to delete */
+  filter: OrderDeleteFilter;
+};
+
 export type DeleteManyProductsInput = {
   /** Filter to find records to delete */
   filter: ProductDeleteFilter;
@@ -115,6 +141,11 @@ export type DeleteManyUserTokensInput = {
 export type DeleteManyUsersInput = {
   /** Filter to find records to delete */
   filter: UserDeleteFilter;
+};
+
+export type DeleteOneOrderInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID'];
 };
 
 export type DeleteOneProductInput = {
@@ -171,16 +202,20 @@ export type LogoutInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createManyOrders: Array<Order>;
   createManyProducts: Array<Product>;
   createManyUserTokens: Array<UserToken>;
   createManyUsers: Array<User>;
+  createOneOrder: Order;
   createOneProduct: Product;
   createOneUser: User;
   createOneUserToken: UserToken;
   createProduct: Product;
+  deleteManyOrders: DeleteManyResponse;
   deleteManyProducts: DeleteManyResponse;
   deleteManyUserTokens: DeleteManyResponse;
   deleteManyUsers: DeleteManyResponse;
+  deleteOneOrder: OrderDeleteResponse;
   deleteOneProduct: ProductDeleteResponse;
   deleteOneUser: UserDeleteResponse;
   deleteOneUserToken: UserTokenDeleteResponse;
@@ -189,19 +224,27 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   removeUserFromUserToken: UserToken;
   resetPassword: Scalars['Boolean'];
+  restoreManyOrders: UpdateManyResponse;
   restoreManyProducts: UpdateManyResponse;
   restoreManyUsers: UpdateManyResponse;
   restoreOneProduct: Product;
   restoreOneUser: User;
   sendPasswordResetEmail: Scalars['Boolean'];
   setUserOnUserToken: UserToken;
+  updateManyOrders: UpdateManyResponse;
   updateManyProducts: UpdateManyResponse;
   updateManyUserTokens: UpdateManyResponse;
   updateManyUsers: UpdateManyResponse;
+  updateOneOrder: Order;
   updateOneProduct: Product;
   updateOneUser: User;
   updateOneUserToken: UserToken;
   updateProduct: Product;
+};
+
+
+export type MutationCreateManyOrdersArgs = {
+  input: CreateManyOrdersInput;
 };
 
 
@@ -217,6 +260,11 @@ export type MutationCreateManyUserTokensArgs = {
 
 export type MutationCreateManyUsersArgs = {
   input: CreateManyUsersInput;
+};
+
+
+export type MutationCreateOneOrderArgs = {
+  input: CreateOneOrderInput;
 };
 
 
@@ -240,6 +288,11 @@ export type MutationCreateProductArgs = {
 };
 
 
+export type MutationDeleteManyOrdersArgs = {
+  input: DeleteManyOrdersInput;
+};
+
+
 export type MutationDeleteManyProductsArgs = {
   input: DeleteManyProductsInput;
 };
@@ -252,6 +305,11 @@ export type MutationDeleteManyUserTokensArgs = {
 
 export type MutationDeleteManyUsersArgs = {
   input: DeleteManyUsersInput;
+};
+
+
+export type MutationDeleteOneOrderArgs = {
+  input: DeleteOneOrderInput;
 };
 
 
@@ -295,6 +353,11 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationRestoreManyOrdersArgs = {
+  input: OrderFilter;
+};
+
+
 export type MutationRestoreManyProductsArgs = {
   input: ProductFilter;
 };
@@ -325,6 +388,11 @@ export type MutationSetUserOnUserTokenArgs = {
 };
 
 
+export type MutationUpdateManyOrdersArgs = {
+  input: UpdateManyOrdersInput;
+};
+
+
 export type MutationUpdateManyProductsArgs = {
   input: UpdateManyProductsInput;
 };
@@ -337,6 +405,11 @@ export type MutationUpdateManyUserTokensArgs = {
 
 export type MutationUpdateManyUsersArgs = {
   input: UpdateManyUsersInput;
+};
+
+
+export type MutationUpdateOneOrderArgs = {
+  input: UpdateOneOrderInput;
 };
 
 
@@ -392,6 +465,162 @@ export type OffsetPaging = {
   limit?: InputMaybe<Scalars['Int']>;
   /** Offset to start returning records from */
   offset?: InputMaybe<Scalars['Int']>;
+};
+
+export type Order = {
+  __typename?: 'Order';
+  amount: Scalars['Float'];
+  createdAt?: Maybe<Scalars['DateTime']>;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  image: Scalars['String'];
+  pizza: Scalars['String'];
+  quantity: Scalars['Float'];
+  size: Scalars['String'];
+  status: Scalars['String'];
+  table: Scalars['Float'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId: Scalars['String'];
+};
+
+export type OrderAggregateGroupBy = {
+  __typename?: 'OrderAggregateGroupBy';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['ID']>;
+  pizza?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  table?: Maybe<Scalars['Float']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId?: Maybe<Scalars['String']>;
+};
+
+export type OrderAvgAggregate = {
+  __typename?: 'OrderAvgAggregate';
+  table?: Maybe<Scalars['Float']>;
+};
+
+export type OrderConnection = {
+  __typename?: 'OrderConnection';
+  /** Array of nodes. */
+  nodes: Array<Order>;
+  /** Paging information */
+  pageInfo: OffsetPageInfo;
+  /** Fetch total count of records */
+  totalCount: Scalars['Int'];
+};
+
+export type OrderCountAggregate = {
+  __typename?: 'OrderCountAggregate';
+  createdAt?: Maybe<Scalars['Int']>;
+  deletedAt?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  pizza?: Maybe<Scalars['Int']>;
+  status?: Maybe<Scalars['Int']>;
+  table?: Maybe<Scalars['Int']>;
+  updatedAt?: Maybe<Scalars['Int']>;
+  userId?: Maybe<Scalars['Int']>;
+};
+
+export type OrderDeleteFilter = {
+  and?: InputMaybe<Array<OrderDeleteFilter>>;
+  createdAt?: InputMaybe<DateFieldComparison>;
+  deletedAt?: InputMaybe<DateFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<OrderDeleteFilter>>;
+  pizza?: InputMaybe<StringFieldComparison>;
+  status?: InputMaybe<StringFieldComparison>;
+  table?: InputMaybe<NumberFieldComparison>;
+  updatedAt?: InputMaybe<DateFieldComparison>;
+  userId?: InputMaybe<StringFieldComparison>;
+};
+
+export type OrderDeleteResponse = {
+  __typename?: 'OrderDeleteResponse';
+  amount?: Maybe<Scalars['Float']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['ID']>;
+  image?: Maybe<Scalars['String']>;
+  pizza?: Maybe<Scalars['String']>;
+  quantity?: Maybe<Scalars['Float']>;
+  size?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  table?: Maybe<Scalars['Float']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId?: Maybe<Scalars['String']>;
+};
+
+export type OrderFilter = {
+  and?: InputMaybe<Array<OrderFilter>>;
+  createdAt?: InputMaybe<DateFieldComparison>;
+  deletedAt?: InputMaybe<DateFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<OrderFilter>>;
+  pizza?: InputMaybe<StringFieldComparison>;
+  status?: InputMaybe<StringFieldComparison>;
+  table?: InputMaybe<NumberFieldComparison>;
+  updatedAt?: InputMaybe<DateFieldComparison>;
+  userId?: InputMaybe<StringFieldComparison>;
+};
+
+export type OrderMaxAggregate = {
+  __typename?: 'OrderMaxAggregate';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['ID']>;
+  pizza?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  table?: Maybe<Scalars['Float']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId?: Maybe<Scalars['String']>;
+};
+
+export type OrderMinAggregate = {
+  __typename?: 'OrderMinAggregate';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['ID']>;
+  pizza?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  table?: Maybe<Scalars['Float']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId?: Maybe<Scalars['String']>;
+};
+
+export type OrderSort = {
+  direction: SortDirection;
+  field: OrderSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum OrderSortFields {
+  CreatedAt = 'createdAt',
+  DeletedAt = 'deletedAt',
+  Id = 'id',
+  Pizza = 'pizza',
+  Status = 'status',
+  Table = 'table',
+  UpdatedAt = 'updatedAt',
+  UserId = 'userId'
+}
+
+export type OrderSumAggregate = {
+  __typename?: 'OrderSumAggregate';
+  table?: Maybe<Scalars['Float']>;
+};
+
+export type OrderUpdateFilter = {
+  and?: InputMaybe<Array<OrderUpdateFilter>>;
+  createdAt?: InputMaybe<DateFieldComparison>;
+  deletedAt?: InputMaybe<DateFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<OrderUpdateFilter>>;
+  pizza?: InputMaybe<StringFieldComparison>;
+  status?: InputMaybe<StringFieldComparison>;
+  table?: InputMaybe<NumberFieldComparison>;
+  updatedAt?: InputMaybe<DateFieldComparison>;
+  userId?: InputMaybe<StringFieldComparison>;
 };
 
 export type Product = {
@@ -561,12 +790,26 @@ export type ProductUpdateFilter = {
 export type Query = {
   __typename?: 'Query';
   me: User;
+  order?: Maybe<Order>;
+  orders: OrderConnection;
   product?: Maybe<Product>;
   products: ProductConnection;
   user?: Maybe<User>;
   userToken?: Maybe<UserToken>;
   userTokens: UserTokenConnection;
   users: UserConnection;
+};
+
+
+export type QueryOrderArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryOrdersArgs = {
+  filter?: InputMaybe<OrderFilter>;
+  paging?: InputMaybe<OffsetPaging>;
+  sorting?: InputMaybe<Array<OrderSort>>;
 };
 
 
@@ -663,6 +906,13 @@ export type TokensType = {
   refreshToken: Scalars['String'];
 };
 
+export type UpdateManyOrdersInput = {
+  /** Filter used to find fields to update */
+  filter: OrderUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateOrder;
+};
+
 export type UpdateManyProductsInput = {
   /** Filter used to find fields to update */
   filter: ProductUpdateFilter;
@@ -690,6 +940,13 @@ export type UpdateManyUsersInput = {
   update: UpdateUser;
 };
 
+export type UpdateOneOrderInput = {
+  /** The id of the record to update */
+  id: Scalars['ID'];
+  /** The update to apply. */
+  update: UpdateOrder;
+};
+
 export type UpdateOneProductInput = {
   /** The id of the record to update */
   id: Scalars['ID'];
@@ -709,6 +966,18 @@ export type UpdateOneUserTokenInput = {
   id: Scalars['ID'];
   /** The update to apply. */
   update: UpdateUserToken;
+};
+
+export type UpdateOrder = {
+  amount?: InputMaybe<Scalars['Float']>;
+  id: Scalars['String'];
+  image?: InputMaybe<Scalars['String']>;
+  pizza?: InputMaybe<Scalars['String']>;
+  quantity?: InputMaybe<Scalars['Float']>;
+  size?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
+  table?: InputMaybe<Scalars['Float']>;
+  userId?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProduct = {
@@ -966,6 +1235,20 @@ export type UserUpdateFilter = {
   updatedAt?: InputMaybe<DateFieldComparison>;
 };
 
+export type CreateOrderMutationVariables = Exact<{
+  userId: Scalars['String'];
+  amount: Scalars['Float'];
+  image: Scalars['String'];
+  pizza: Scalars['String'];
+  quantity: Scalars['Float'];
+  size: Scalars['String'];
+  status: Scalars['String'];
+  table: Scalars['Float'];
+}>;
+
+
+export type CreateOrderMutation = { __typename?: 'Mutation', createOneOrder: { __typename?: 'Order', amount: number, createdAt?: any | null, id: string, image: string, pizza: string, size: string, status: string, table: number, userId: string } };
+
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
   name: Scalars['String'];
@@ -1055,6 +1338,56 @@ export type ProductsQueryVariables = Exact<{
 export type ProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductConnection', totalCount: number, pageInfo: { __typename?: 'OffsetPageInfo', hasNextPage?: boolean | null, hasPreviousPage?: boolean | null }, nodes: Array<{ __typename?: 'Product', id: string, name: string, description: string, imageDirs?: Array<string> | null, priceSizeL: number, priceSizeM: number, priceSizeS: number }> } };
 
 
+export const CreateOrderDocument = gql`
+    mutation CreateOrder($userId: String!, $amount: Float!, $image: String!, $pizza: String!, $quantity: Float!, $size: String!, $status: String!, $table: Float!) {
+  createOneOrder(
+    input: {order: {userId: $userId, amount: $amount, image: $image, pizza: $pizza, quantity: $quantity, size: $size, status: $status, table: $table}}
+  ) {
+    amount
+    createdAt
+    id
+    image
+    pizza
+    size
+    status
+    table
+    userId
+  }
+}
+    `;
+export type CreateOrderMutationFn = Apollo.MutationFunction<CreateOrderMutation, CreateOrderMutationVariables>;
+
+/**
+ * __useCreateOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderMutation, { data, loading, error }] = useCreateOrderMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      amount: // value for 'amount'
+ *      image: // value for 'image'
+ *      pizza: // value for 'pizza'
+ *      quantity: // value for 'quantity'
+ *      size: // value for 'size'
+ *      status: // value for 'status'
+ *      table: // value for 'table'
+ *   },
+ * });
+ */
+export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderMutation, CreateOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderMutation, CreateOrderMutationVariables>(CreateOrderDocument, options);
+      }
+export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
+export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
+export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($email: String!, $name: String!, $password: String!, $isAdmin: Boolean!) {
   createOneUser(

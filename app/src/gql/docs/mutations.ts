@@ -1,6 +1,42 @@
 import { gql } from '@apollo/client'
 
 gql`
+  mutation CreateOrder(
+    $userId: String!
+    $amount: Float!
+    $image: String!
+    $pizza: String!
+    $quantity: Float!
+    $size: String!
+    $status: String!
+    $table: Float!
+  ) {
+    createOneOrder(
+      input: {
+        order: {
+          userId: $userId
+          amount: $amount
+          image: $image
+          pizza: $pizza
+          quantity: $quantity
+          size: $size
+          status: $status
+          table: $table
+        }
+      }
+    ) {
+      amount
+      createdAt
+      id
+      image
+      pizza
+      size
+      status
+      table
+      userId
+    }
+  }
+
   # Account
   mutation CreateUser(
     $email: String!
