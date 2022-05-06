@@ -86,7 +86,9 @@ export const Home = () => {
       <S.Header>
         <S.Greeting>
           <S.GreetingEmoji source={happyEmoji} />
-          <S.GreetingText>Olá, Admin</S.GreetingText>
+          <S.GreetingText>
+            Olá, {user && `${user.name}${user.isAdmin && ' (Adm)'}`}
+          </S.GreetingText>
         </S.Greeting>
 
         <TouchableOpacity onPress={logout} disabled={authLoading}>

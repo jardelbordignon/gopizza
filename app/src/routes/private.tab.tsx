@@ -5,8 +5,7 @@ import { useTheme } from 'styled-components/native'
 
 import { BottomMenu } from 'src/components'
 import { Home } from 'src/screens/private/Home'
-import { OrderForm } from 'src/screens/private/Order/Form'
-import { OrderList } from 'src/screens/private/Order/List'
+import { OrderForm, OrderList } from 'src/screens/private/Order'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
