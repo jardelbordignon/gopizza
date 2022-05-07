@@ -68,9 +68,7 @@ export class CreateOrderDTO {
 }
 
 @InputType('UpdateOrder')
-export class UpdateOrderDTO extends PartialType(CreateOrderDTO) {
-  id: string
-}
+export class UpdateOrderDTO extends PartialType(CreateOrderDTO) {}
 
 @InputType('DeleteOrder')
 export class DeleteOrderDTO {

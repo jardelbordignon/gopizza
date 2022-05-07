@@ -1,9 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useState } from 'react'
-import { FlatList } from 'react-native'
+import { Alert, FlatList } from 'react-native'
 
 import { Progress } from 'src/components'
-import { Order, useOrdersLazyQuery } from 'src/gql/genApiDocs'
+import {
+  Order,
+  useOrdersLazyQuery,
+  useUpdateOrderMutation,
+} from 'src/gql/genApiDocs'
 
 import { OrderCard } from './OrderCard'
 import * as S from './styles'
@@ -14,6 +18,7 @@ export const OrderList = () => {
   const [page, setPage] = useState(0)
   const limit = 10
 
+  const [updateOrderMutation] = useUpdateOrderMutation()
   const [ordersQuery, { data, loading: dataLoading }] = useOrdersLazyQuery()
   const loadingOrders = !data || dataLoading
 
@@ -42,6 +47,29 @@ export const OrderList = () => {
     }
   }
 
+  const handleOrderDelivered = (id: string) => {
+    Alert.alert('Pedido', 'Pedido já foi entregue?', [
+      { text: 'Não', style: 'cancel' },
+      {
+        text: 'Sim',
+        onPress: () => {
+          updateOrderMutation({
+            variables: { id, status: 'Delivered' },
+            onCompleted: () => {
+              setOrders(
+                orders.map(order => {
+                  if (order.id === id) order.status = 'Delivered'
+                  return order
+                })
+              )
+            },
+            onError: error => console.log(error),
+          })
+        },
+      },
+    ])
+  }
+
   return (
     <S.Wrapper>
       <S.Header>
@@ -61,7 +89,12 @@ export const OrderList = () => {
           data={orders}
           keyExtractor={item => item.id}
           renderItem={({ item, index }) => (
-            <OrderCard order={item} index={index} />
+            <OrderCard
+              order={item}
+              index={index}
+              disabled={item.status !== 'Ready'}
+              onPress={() => handleOrderDelivered(item.id)}
+            />
           )}
           numColumns={2}
           showsVerticalScrollIndicator={false}

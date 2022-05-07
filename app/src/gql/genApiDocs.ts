@@ -970,7 +970,6 @@ export type UpdateOneUserTokenInput = {
 
 export type UpdateOrder = {
   amount?: InputMaybe<Scalars['Float']>;
-  id: Scalars['String'];
   image?: InputMaybe<Scalars['String']>;
   pizza?: InputMaybe<Scalars['String']>;
   quantity?: InputMaybe<Scalars['Float']>;
@@ -1322,6 +1321,21 @@ export type DeleteProductMutationVariables = Exact<{
 
 
 export type DeleteProductMutation = { __typename?: 'Mutation', deleteProduct: boolean };
+
+export type UpdateOrderMutationVariables = Exact<{
+  id: Scalars['ID'];
+  userId?: InputMaybe<Scalars['String']>;
+  amount?: InputMaybe<Scalars['Float']>;
+  image?: InputMaybe<Scalars['String']>;
+  pizza?: InputMaybe<Scalars['String']>;
+  quantity?: InputMaybe<Scalars['Float']>;
+  size?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
+  table?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type UpdateOrderMutation = { __typename?: 'Mutation', updateOneOrder: { __typename?: 'Order', amount: number, createdAt?: any | null, id: string, image: string, pizza: string, size: string, status: string, table: number, userId: string } };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1701,6 +1715,57 @@ export function useDeleteProductMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
 export type DeleteProductMutationResult = Apollo.MutationResult<DeleteProductMutation>;
 export type DeleteProductMutationOptions = Apollo.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
+export const UpdateOrderDocument = gql`
+    mutation UpdateOrder($id: ID!, $userId: String, $amount: Float, $image: String, $pizza: String, $quantity: Float, $size: String, $status: String, $table: Float) {
+  updateOneOrder(
+    input: {id: $id, update: {userId: $userId, amount: $amount, image: $image, pizza: $pizza, quantity: $quantity, size: $size, status: $status, table: $table}}
+  ) {
+    amount
+    createdAt
+    id
+    image
+    pizza
+    size
+    status
+    table
+    userId
+  }
+}
+    `;
+export type UpdateOrderMutationFn = Apollo.MutationFunction<UpdateOrderMutation, UpdateOrderMutationVariables>;
+
+/**
+ * __useUpdateOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrderMutation, { data, loading, error }] = useUpdateOrderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      userId: // value for 'userId'
+ *      amount: // value for 'amount'
+ *      image: // value for 'image'
+ *      pizza: // value for 'pizza'
+ *      quantity: // value for 'quantity'
+ *      size: // value for 'size'
+ *      status: // value for 'status'
+ *      table: // value for 'table'
+ *   },
+ * });
+ */
+export function useUpdateOrderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOrderMutation, UpdateOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(UpdateOrderDocument, options);
+      }
+export type UpdateOrderMutationHookResult = ReturnType<typeof useUpdateOrderMutation>;
+export type UpdateOrderMutationResult = Apollo.MutationResult<UpdateOrderMutation>;
+export type UpdateOrderMutationOptions = Apollo.BaseMutationOptions<UpdateOrderMutation, UpdateOrderMutationVariables>;
 export const UsersDocument = gql`
     query Users {
   users {

@@ -759,7 +759,6 @@ input UpdateOneUserTokenInput {
 
 input UpdateOrder {
   amount: Float
-  id: String!
   image: String
   pizza: String
   quantity: Float

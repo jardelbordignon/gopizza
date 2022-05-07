@@ -152,4 +152,42 @@ gql`
   mutation DeleteProduct($id: String!, $isSoft: Boolean) {
     deleteProduct(input: { id: $id, isSoft: $isSoft })
   }
+
+  mutation UpdateOrder(
+    $id: ID!
+    $userId: String
+    $amount: Float
+    $image: String
+    $pizza: String
+    $quantity: Float
+    $size: String
+    $status: String
+    $table: Float
+  ) {
+    updateOneOrder(
+      input: {
+        id: $id
+        update: {
+          userId: $userId
+          amount: $amount
+          image: $image
+          pizza: $pizza
+          quantity: $quantity
+          size: $size
+          status: $status
+          table: $table
+        }
+      }
+    ) {
+      amount
+      createdAt
+      id
+      image
+      pizza
+      size
+      status
+      table
+      userId
+    }
+  }
 `
