@@ -54,7 +54,7 @@ export const OrderForm = () => {
       ...vars,
       userId: user!.id,
       amount,
-      image: product.imageDirs ? `${product.imageDirs[0]}/s.jpg` : '',
+      image: product.imageDirs ? `${product.imageDirs[0]}s.jpg` : '',
       pizza: product.name,
       status: 'Preparing',
       size,

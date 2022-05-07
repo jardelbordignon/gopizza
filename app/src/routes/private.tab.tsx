@@ -1,17 +1,31 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 import { useTheme } from 'styled-components/native'
 
 import { BottomMenu } from 'src/components'
+import { useNotificationsLazyQuery } from 'src/gql/genApiDocs'
 import { Home } from 'src/screens/private/Home'
 import { OrderForm, OrderList } from 'src/screens/private/Order'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
 export const PrivateTabRoutes = () => {
+  const [notifications, setNotifications] = useState('0')
   const { COLORS } = useTheme()
   const isIos = Platform.OS === 'ios'
+
+  const [notificationsQuery] = useNotificationsLazyQuery()
+
+  const loadNotifications = async () => {
+    const res = await notificationsQuery()
+    if (res.data) setNotifications(String(res.data.orders.totalCount))
+  }
+
+  useEffect(() => {
+    loadNotifications()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Navigator
@@ -39,7 +53,11 @@ export const PrivateTabRoutes = () => {
         component={OrderList}
         options={{
           tabBarIcon: ({ color }) => (
-            <BottomMenu title={'Pedidos'} color={color} notifications="1" />
+            <BottomMenu
+              title={'Pedidos'}
+              color={color}
+              notifications={notifications}
+            />
           ),
         }}
       />

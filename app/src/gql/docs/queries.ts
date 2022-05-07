@@ -12,6 +12,12 @@ gql`
     }
   }
 
+  query Notifications {
+    orders(filter: { status: { eq: "Ready" } }) {
+      totalCount
+    }
+  }
+
   query Orders($limit: Int!, $offset: Int!, $filter: String) {
     orders(
       paging: { limit: $limit, offset: $offset }
